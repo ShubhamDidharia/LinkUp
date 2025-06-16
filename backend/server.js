@@ -1,15 +1,20 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';   
-import connectDB from './config/db.js';
+import connectDB from './db/connectMongo.js';
+const PORT = process.env.PORT || 8000;
 
 const app = express();
 
 dotenv.config();
 
+app.use(express.json()); app.use(express.urlencoded({ extended: true }));
+// Middleware to parse JSON and URL-encoded data
 app.use('/api/auth', authRoutes);
 
-const PORT = process.env.PORT || 8000;
+app.get('/',(req,res)=>{
+  res.send('Welcome to the backend server');
+})
 
 
 
