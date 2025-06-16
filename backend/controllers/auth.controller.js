@@ -50,11 +50,7 @@ export const signup = async(req,res)=>{
         res.status(500).json({error:"Internal server error"});
     }
 }
-export const signin = async(req,res)=>{
-    res.json({
-        data:"hit the signin endpoint"
-    })
-}
+
 export const login = async(req,res)=>{
     try{
         const {username , password}  = req.body; 
@@ -84,5 +80,20 @@ export const logout = async(req,res)=>{
         console.error("error logging out:", err);
         res.status(500).json({error:"Internal server error"});
     }
+}
+
+//get the authenticated user details
+export const getMe = async(req,res)=>{
+    try{
+        //we added entire user object to the request in the protectedRoute middleware
+        // so we can access it here
+        const user = await User.findById(req.user._id);
+        res.status(200).json(user);
+    }
+    catch(err){
+        console.error("Error getting user details:", err);
+        res.status(500).json({error:"Internal server error"}); 
+    }
+    
 }
 
