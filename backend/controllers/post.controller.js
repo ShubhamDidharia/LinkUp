@@ -17,7 +17,7 @@ export const getAllPosts = async(req, res) =>{
         // But your frontend needs the full user details (like username, avatar, etc.),
        // populate() helps avoid additional DB queries on the client.
        // So you just send the fully enriched response (e.g. post + user details) directly from your backend to frontend.
-       
+
         const posts   = await Post.find().sort({createdAt: -1}).populate({
             path: 'user',
             select: '-password'
@@ -127,10 +127,10 @@ export const likeUnlikePost = async(req,res)=>{
     try {
         const {id : postId} = req.params;
         const userId = req.user._id; // protectedRoute middleware
-
+        
         // user who made request to like/unlike the post, shall be added to like list of post
         // send notification to owner of post about like
-        
+        const user = await User.findById(userId);
         const post  = await Post.findById(postId);
         if(!post){
             return res.status(404).json({error : "post not found"});
@@ -140,12 +140,15 @@ export const likeUnlikePost = async(req,res)=>{
 
         if(isLiked){
             // unlike the post
-            await Post.updateOne({_id : postId}, {$pull : {likes: userId}});
+            await Post.updateOne({_id : postId}, {$pull : {likes: userId}}); // post is unliked
+            await User.updateOne({_id : userId}, {$pull : {likedPosts : postId}}); // removed from user's liked list
             res.status(200).json({message: "Post unliked successfully"});
         }else{
             //like the post
-            post.likes.push(userId); 
+            post.likes.push(userId);  
+            user.likedPosts.push(postId);
             await post.save();
+            await user.save();
 
             //send like notification
             const newNotification = new Notification( {
@@ -163,4 +166,63 @@ export const likeUnlikePost = async(req,res)=>{
         console.error(" Error liking/unliking post:", error);
         res.status(500).json({error: "Internal server error"})
     }
+}
+
+export const getLikedPosts = async(req,res)=>{
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId);
+        if(!user){return res.status(404).json({error: "User not found"});}
+
+        const posts = await Post.find({likes: userId}).populate({path : "user", select : "-password"}).populate({
+            path: 'comments.user',
+            select: "-password -email -bio -link"
+        });
+        res.status(200).json(posts);
+        
+    } catch (error) {
+        console.error("Error fetching liked posts:", error);
+        res.status(500).json({error: "Internal server error"})
+    }
+}
+
+export const getFollowerPosts = async(req,res)=>{
+    const userId = req.user._id;
+    try {
+        const user = await User.findById(userId);
+        if(!user){return res.status(404).json({error: "User not found"});}
+
+        const following = user.following;
+        // find posts whose owner is found in following list of user
+        const feedPosts = await Post.find({user : {$in: following}}).sort({createdAt: -1}).populate({
+            path: 'user',
+            select: '-password'
+        }).populate({
+            path: 'comments.user',
+            select: "-password -email -bio -link"
+        });
+        res.status(200).json(feedPosts);
+
+   
+    } catch (error) {
+        console.error("Error fetching follower posts:", error);
+        res.status(500).json({error: "Internal server error"})
+    }
+}
+
+export const getUserPosts = async(req, res) =>{
+    const {username} = req.params.userame;
+    const user = await User.find({username});
+    if(!user){
+        return res.status(404).json({error: "User not found"});
+    }
+    const posts = await Post.find({user: user._id}).populate({
+        path: 'user',
+        select: '-password'
+    }).populate({
+        path: 'comments.user',
+        select: "-password"
+    });
+    res.status(200).json(posts);
 }
