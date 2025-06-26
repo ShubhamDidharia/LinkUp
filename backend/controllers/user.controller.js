@@ -56,7 +56,8 @@ export const followUnfollowUser = async(req,res)=>{
             })
             await newNotification.save(); // Create a new notification
 
-            res.status(200).json({message: "Followed successfully"});
+            res.status(200).json({message: "Followed successfully"}); 
+
         }
 
 
@@ -106,7 +107,7 @@ export const updateUserProfile = async(req,res)=>{
             return res.status(404).json({error: "User not found"});
         }
 
-        if((!currentPassword && newPasswrod) || (!newPassword && currentPassword)){
+        if((!currentPassword && newPassword) || (!newPassword && currentPassword)){
             return res.status(400).json({error: "Both current and new passwords must be provided or neither"});
         }
 
