@@ -6,21 +6,21 @@ export const signup = async(req,res)=>{
     const {username,fullName,email,password} = req.body;
     const emailRegex  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation regex
     if(!emailRegex.test(email)){
-        return res.status(400).json({error:"Invalid email format"});
+        return res.status(200).json({error:"Invalid email format"});
     }
 
     const existingUser = await User.findOne({username: username});
     if(existingUser){
-        return res.status(400).json({error:"Username already exists"});
+        return res.status(200).json({error:"Username already exists"});
     }
 
     const existingEmail = await User.findOne({email: email});
     if(existingEmail){
-        return res.status(400).json({error:"Email already exists"});
+        return res.status(200).json({error:"Email already exists"});
     }
 
     if(password.length < 6){
-        return res.status(400).json({error:"Password must be at least 6 characters long"});
+        return res.status(200).json({error:"Password must be at least 6 characters long"});
     }
 
     try{
@@ -36,7 +36,7 @@ export const signup = async(req,res)=>{
             // Function to generate token and set cookie
             generateTokenAndSetCookie(newUser._id,res);
             await newUser.save();
-            res.status(201).json({message:"User created successfully", newUser});
+            res.status(201).json({success:"User created successfully", newUser});
 
         }else{
             res.status(400).json({error:"Failed to create user"});
@@ -56,15 +56,15 @@ export const login = async(req,res)=>{
         const {username , password}  = req.body; 
         const user = await User.findOne({username: username});
         if(!user){
-            return res.status(400).json({error:"Invalid username or password"});
+            return res.status(200).json({error:"Invalid username or password"});
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(!isPasswordValid){
-            return res.status(400).json({error:"Invalid username or password"});
+            return res.status(200).json({error:"Invalid username or password"});
         }
         // Function to generate token and set cookie
         generateTokenAndSetCookie(user._id, res);
-        res.status(200).json({message:"Login successful", user});
+        res.status(200).json({success:"Login successful", user});
     }catch(err){
         console.error("Error logging in:", err);
         res.status(500).json({error:"Internal server error"});
