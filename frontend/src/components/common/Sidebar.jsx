@@ -5,42 +5,35 @@ import { IoNotifications } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
-import { useMutation } from "@tanstack/react-query";
+
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
 const Sidebar = () => {
-	const {mutate: logoutMutation, isPending, isError,error} = useMutation({
-		mutationFn:async()=>{
-			try {
-				const res = await fetch('/api/auth/logout', {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				});
-				
-				const data = await res.json()
-				if(!res.ok){
-					throw new Error(data.error || "Something went wrong" );
-				}
-				
-			} catch (error) {
-				console.log("error ", error);
-				throw new Error(error);
-				
-			}
+	
+	const queryClient = useQueryClient();
 
-		},
-		onSuccess:()=>{
+	const logout = async () => {
+		try {
+			const res = await fetch('/api/auth/logout', { method: 'POST' });
+			if (!res.ok) throw new Error("Failed to logout");
+
+			// Clear cached authUser
+			queryClient.setQueryData(['authUser'], null);
+
+			
 			toast.success("Logged out successfully");
+		} catch (err) {
+			toast.error(err.message);
 		}
+  	};
 
-	})
+	const authUser = queryClient.getQueryData(['authUser']);
 
 	const data = {
-		fullName: "John Doe",
-		username: "johndoe",
-		profileImg: "/avatars/boy1.png",
+		fullName: authUser.fullName,
+		username: authUser.username,
+		profileImg: authUser.profileImg,
 	};
 
 	return (
@@ -97,7 +90,7 @@ const Sidebar = () => {
 							<BiLogOut className='w-5 h-5 cursor-pointer'
 							onClick = {(e)=>{
 								e.preventDefault;
-								logoutMutation()}
+								logout()}
 								} />
 						</div>
 					</Link>
