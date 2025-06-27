@@ -21,7 +21,8 @@ cloudinary.config({
 })
 
 app.use(cookieParser()); // Middleware to parse cookies from requests
-app.use(express.json()); app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit : "5mb"}));  //  limit shouldnt be too large to avoid DoS attacks
+app.use(express.urlencoded({ extended: true }));
 // Middleware to parse JSON and URL-encoded data
 
 
