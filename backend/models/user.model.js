@@ -31,10 +31,10 @@ const userSchema = new mongoose.Schema({
             default: [] // when signing up for first time, no following
         }
     ],
-    profileImg:{
+    profileImage:{
         type:String, 
         default:""
-    },coverImg:{
+    },coverImage:{
         type:String, 
         default:""
     },bio:{
