@@ -22,7 +22,6 @@ const useFollow = ()=>{
 
         },
         onSuccess: ()=>{
-            toast.success('Followed successfully');
             // invalidate queries to fetch updated user data after following
             Promise.all([
                 queryClient.invalidateQueries({queryKey : ['authUser']}),

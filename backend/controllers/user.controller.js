@@ -98,65 +98,66 @@ export const getSuggestedUsers = async(req,res)=>{
 
 
 export const updateUserProfile = async(req,res)=>{
-    const {username, fullName, email, bio, link, currentPassword, newPassword} = req.body;
-    let {profileImage, coverImage} = req.body;
-    const userId = req.user._id; // user from the protectedRoute middleware
-    try {
-        let user = await User.findById(userId);
-        if(!user){
-            return res.status(404).json({error: "User not found"});
-        }
+    const { fullName, email, username, currentPassword, newPassword, bio, link } = req.body;
+	let { profileImg, coverImg } = req.body;
 
-        if((!currentPassword && newPassword) || (!newPassword && currentPassword)){
-            return res.status(400).json({error: "Both current and new passwords must be provided or neither"});
-        }
+	const userId = req.user._id;
 
-        if(currentPassword && newPassword) {
-            const isMatch  = await bcrypt.compare(currentPassword, user.password);
-            if(!isMatch){
-                return res.status(400).json({error: "Current password is incorrect"});
-            }
-            if(newPassword.length < 6){
-                return res.status(400).json({error: "New password must be at least 6 characters long"});
-            }
+	try {
+		let user = await User.findById(userId);
+		if (!user) return res.status(404).json({ message: "User not found" });
 
-            user.password =  await bcrypt.hash(newPassword, 10); // Update the password
-        }
+		if ((!newPassword && currentPassword) || (!currentPassword && newPassword)) {
+			return res.status(400).json({ error: "Please provide both current password and new password" });
+		}
 
-        if(profileImage){
-            if(user.profileImage){
-                const publicId = user.profileImage.split('/').pop().split('.')[0]; // Extract public ID from the URL
-                await cloudinary.uploader.destroy(publicId); // Delete the old image from Cloudinary
+		if (currentPassword && newPassword) {
+			const isMatch = await bcrypt.compare(currentPassword, user.password);
+			if (!isMatch) return res.status(400).json({ error: "Current password is incorrect" });
+			if (newPassword.length < 6) {
+				return res.status(400).json({ error: "Password must be at least 6 characters long" });
+			}
 
-            }
-            // Upload the new profile image to Cloudinary
-            const uploadedResponse = await cloudinary.uploader.upload(profileImage);
-            profileImage = uploadedResponse.secure_url; // Get the secure URL of the uploaded image
-        }
-        if(coverImage){
-            if(user.coverImage){
-                const publicId = user.coverImage.split('/').pop().split('.')[0]; // Extract public ID from the URL
-                await cloudinary.uploader.destroy(publicId); // Delete the old image from Cloudinary
-            }
-            const uploadedResponse = await cloudinary.uploader.upload(coverImageImage);
-            coverImage = uploadedResponse.secure_url; // Get the secure URL of the uploaded image
-        }
+			const salt = await bcrypt.genSalt(10);
+			user.password = await bcrypt.hash(newPassword, salt);
+		}
 
-        user.fullName = fullName || user.fullName; // Update fullName if provided, otherwise keep the existing value
-        user.username = username || user.username; // Update username if provided, otherwise keep the existing value
-        user.email = email || user.email; // Update email if provided, otherwise keep the existing value
-        user.bio = bio || user.bio; // Update bio if provided, otherwise keep the existing value
-        user.link = link || user.link; // Update link if provided, otherwise keep the existing value
-        user.profileImage = profileImage || user.profileImage; // Update profileImage if provided, otherwise keep the existing value
-        user.coverImage = coverImage || user.coverImage; // Update coverImage if provided, otherwise keep the existing value
-        await user.save(); // Save the updated user document
-        user.password = undefined; // Remove password field from the response
-        res.status(200).json(user); // Respond with the updated user document
-        
-    } catch (error) {
-        console.error("error updating profile : ", error);
-        res.status(500).json({error: "Internal server error"});
+		if (profileImg) {
+			if (user.profileImg) {
+				// https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
+				await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]);
+			}
 
-    }
+			const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+			profileImg = uploadedResponse.secure_url;
+		}
+
+		if (coverImg) {
+			if (user.coverImg) {
+				await cloudinary.uploader.destroy(user.coverImg.split("/").pop().split(".")[0]);
+			}
+
+			const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+			coverImg = uploadedResponse.secure_url;
+		}
+
+		user.fullName = fullName || user.fullName;
+		user.email = email || user.email;
+		user.username = username || user.username;
+		user.bio = bio || user.bio;
+		user.link = link || user.link;
+		user.profileImg = profileImg || user.profileImg;
+		user.coverImg = coverImg || user.coverImg;
+
+		user = await user.save();
+
+		// password should be null in response
+		user.password = null;
+
+		return res.status(200).json(user);
+	} catch (error) {
+		console.log("Error in updateUser: ", error.message);
+		res.status(500).json({ error: error.message });
+	}
 }
     
