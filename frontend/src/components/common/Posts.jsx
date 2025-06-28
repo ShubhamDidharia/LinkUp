@@ -4,7 +4,7 @@ import { POSTS } from "../../utils/db/dummy";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-const Posts = ({feedType}) => {
+const Posts = ({feedType, username, userId}) => {
 
 	const getPostEndpoint = ()=>{
 		switch (feedType){
@@ -12,6 +12,12 @@ const Posts = ({feedType}) => {
 				return "/api/posts/all";
 			case "following":
 				return "/api/posts/followerPosts";
+			// posts made by authUser
+			case "posts":
+				return `/api/posts/user/${username}`;
+			// posts liked byauthUser
+			case  "likes":
+				return `/api/posts/liked/${userId}`;
 			default :
 				return "/api/posts/all";
 		}
@@ -42,9 +48,10 @@ const Posts = ({feedType}) => {
 
 	// refetch() is a function provided by React Query’s useQuery() hook to manually 
 	// re-run the query and fetch fresh data.
+
 	useEffect(()=>{
 		refetch()
-	}, [feedType, refetch])
+	}, [feedType,  refetch])
 
 	return (
 		<>

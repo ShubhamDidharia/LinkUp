@@ -217,8 +217,15 @@ export const getFollowerPosts = async(req,res)=>{
 }
 
 export const getUserPosts = async(req, res) =>{
-    const {username} = req.params.userame;
-    const user = await User.find({username});
+
+    // Use findOne instead of find
+    // - find() returns an array of documents: [ {...}, {...} ]
+    // - findOne() returns a single document: { ... }
+    // If we use find(), we'd need to do user[0]._id (array indexing)
+    // Using findOne() makes it easier and safer to access user._id directly
+
+    const {username} = req.params;
+    const user = await User.findOne({username});
     if(!user){
         return res.status(404).json({error: "User not found"});
     }

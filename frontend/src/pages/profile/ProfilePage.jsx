@@ -14,6 +14,7 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
+import { formatMemberSinceDate } from "../../utils/date";
 
 const ProfilePage = () => {
 	const [coverImg, setCoverImg] = useState(null);
@@ -23,16 +24,13 @@ const ProfilePage = () => {
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
 
-	
-	const isMyProfile = true;
-
 	const {username} = useParams();
-
+	const {data : authUser} = useQuery({queryKey: ['authUser']})
 	const {data : user, isLoading, refetch, isRefetching} = useQuery({
 		queryKey : ['userProfile'],
 		queryFn: async()=>{
 			try {
-				const res = await fetch(`api/users/profile/${username}`);
+				const res = await fetch(`/api/users/profile/${username}`);
 				const data  = await res.json();
 				if(!res.ok){
 					throw new Error(data.error || "Something went wrong");
@@ -49,6 +47,8 @@ const ProfilePage = () => {
 	useEffect(()=>{
 		refetch();
 	}, [username, refetch])
+
+	const isMyProfile = authUser?._id === user?._id;
 
 	const handleImgChange = (e, state) => {
 		const file = e.target.files[0];
@@ -170,7 +170,10 @@ const ProfilePage = () => {
 									)}
 									<div className='flex gap-2 items-center'>
 										<IoCalendarOutline className='w-4 h-4 text-slate-500' />
-										<span className='text-sm text-slate-500'>Joined July 2021</span>
+										<span className='text-sm text-slate-500'>
+											{
+												formatMemberSinceDate(user?.createdAt)
+											}</span>
 									</div>
 								</div>
 								<div className='flex gap-2'>
@@ -207,7 +210,13 @@ const ProfilePage = () => {
 						</>
 					)}
 
-					<Posts />
+					{/* <Posts feedType={feedType} username={username} userId = {user._id}/> */}
+					{!isLoading && !isRefetching && user && (
+  <>
+						...
+						<Posts feedType={feedType} username={username} userId={user._id} />
+					</>
+)}
 				</div>
 			</div>
 		</>
