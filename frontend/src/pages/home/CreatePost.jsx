@@ -42,7 +42,7 @@ const CreatePost = () => {
 	})
 
 	const data = {
-		profileImg: authUser?.profileImg,
+		profileImg: authUser?.profileImage,
 	};
 
 	const handleSubmit = (e) => {

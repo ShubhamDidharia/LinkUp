@@ -33,7 +33,7 @@ const Sidebar = () => {
 	const data = {
 		fullName: authUser.fullName,
 		username: authUser.username,
-		profileImg: authUser.profileImg,
+		profileImg: authUser.profileImage,
 	};
 
 	return (
