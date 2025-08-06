@@ -8,7 +8,7 @@ const HomePage = () => {
   const [feedType, setFeedType] = useState("forYou")
 
   return (
-    <div className="flex-[4_4_0] bg-gradient-to-b from-slate-50 to-white min-h-screen border-x border-slate-200">
+    <div className="flex-1 bg-gradient-to-b from-slate-50 to-white min-h-screen border-x border-slate-200">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="flex">
