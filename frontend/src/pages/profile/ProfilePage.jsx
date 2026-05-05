@@ -97,7 +97,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex-[4_4_0] bg-gradient-to-b from-slate-50 to-white min-h-screen border-x border-slate-200">
+    <div className="flex-1 bg-gradient-to-b from-slate-50 to-white min-h-screen border-x border-slate-200">
       {/* HEADER */}
       {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
       {!isLoading && !isRefetching && !user && (

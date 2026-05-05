@@ -19,16 +19,13 @@ const userSchema = new mongoose.Schema({
     },followers:[
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            // must be an object belonging to user model
-            default: [] // when signing up for first time, no followers
+            ref: 'User'
         }
-    ],following:[
+    ],
+    following:[
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            // must be an object belonging to user model
-            default: [] // when signing up for first time, no following
+            ref: 'User'
         }
     ],
     profileImage:{
@@ -46,8 +43,13 @@ const userSchema = new mongoose.Schema({
     },likedPosts : [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Post',
-            default: []
+            ref: 'Post'
+        }
+    ],
+    bookmarkedPosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post'
         }
     ]
 },{timestamps: true});

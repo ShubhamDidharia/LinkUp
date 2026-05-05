@@ -6,6 +6,8 @@ import Sidebar from './components/common/Sidebar';
 import RightPanel from './components/common/RightPanel.jsx';
 import NotificationPage from './pages/notification/NotificationPage..jsx';
 import ProfilePage from './pages/profile/ProfilePage';
+import BookmarkedPostsPage from './pages/bookmarks/BookmarkedPostsPage';
+import SearchUsersPage from './pages/search/SearchUsersPage';
 import { Toaster } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -50,6 +52,8 @@ function App() {
           <Route path='/signup' element={ !authUser ? <SignUpPage/>  : <Navigate to = '/'/>}/>
           <Route path='/notifications' element={authUser ? <NotificationPage/>: <Navigate to='/login'/>}/>
           <Route path='/profile/:username' element={authUser ? <ProfilePage/> : <Navigate to='/login'/>}/>
+          <Route path='/bookmarks' element={authUser ? <BookmarkedPostsPage/> : <Navigate to='/login'/>}/>
+          <Route path='/search' element={authUser ? <SearchUsersPage/> : <Navigate to='/login'/>}/>
         </Routes>
         {authUser && <RightPanel/>}
         <Toaster/>

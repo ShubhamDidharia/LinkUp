@@ -160,3 +160,28 @@ export const updateUserProfile = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const searchUsers = async(req,res)=>{
+    try {
+        const {query} = req.query;
+        const userId = req.user._id;
+
+        if(!query || query.trim() === ""){
+            return res.status(200).json([]);
+        }
+
+        // Search for users by username or fullName
+        const users = await User.find({
+            $or: [
+                { username: { $regex: query, $options: 'i' } },
+                { fullName: { $regex: query, $options: 'i' } }
+            ],
+            _id: { $ne: userId } // Exclude current user
+        }).select('-password -email -__v').limit(10);
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error searching users:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}

@@ -238,3 +238,100 @@ export const getUserPosts = async(req, res) =>{
     });
     res.status(200).json(posts);
 }
+
+export const updatePost = async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const {text} = req.body;
+        let {img} = req.body;
+        const userId = req.user._id;
+
+        const post = await Post.findById(id);
+        if(!post){
+            return res.status(404).json({error: "Post not found"});
+        }
+
+        // Check if user is post owner
+        if(post.user.toString() !== userId.toString()){
+            return res.status(401).json({error: "Unauthorized access"});
+        }
+
+        if(!text && !img){
+            return res.status(400).json({error: "Post cannot be empty"});
+        }
+
+        // Handle image update
+        if(img && img !== post.img){
+            // Delete old image if exists
+            if(post.img){
+                const imageId = post.img.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(imageId);
+            }
+            // Upload new image
+            const uploadedResponse = await cloudinary.uploader.upload(img);
+            img = uploadedResponse.secure_url;
+        }
+
+        post.text = text || post.text;
+        post.img = img || post.img;
+        await post.save();
+
+        res.status(200).json(post);
+    } catch (error) {
+        console.error("Error updating post:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const bookmarkPost = async(req,res)=>{
+    try {
+        const {id: postId} = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({error: "Post not found"});
+        }
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        const isBookmarked = user.bookmarkedPosts.includes(postId);
+
+        if(isBookmarked){
+            // Remove bookmark
+            await User.updateOne({_id: userId}, {$pull: {bookmarkedPosts: postId}});
+            res.status(200).json({message: "Bookmark removed", isBookmarked: false});
+        } else {
+            // Add bookmark
+            user.bookmarkedPosts.push(postId);
+            await user.save();
+            res.status(200).json({message: "Post bookmarked", isBookmarked: true});
+        }
+    } catch (error) {
+        console.error("Error bookmarking post:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const getBookmarkedPosts = async(req,res)=>{
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        const posts = await Post.find({_id: {$in: user.bookmarkedPosts}})
+            .sort({createdAt: -1})
+            .populate({path: 'user', select: '-password'})
+            .populate({path: 'comments.user', select: '-password -email -bio -link'});
+        
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error("Error fetching bookmarked posts:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}

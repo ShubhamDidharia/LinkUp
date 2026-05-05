@@ -3,8 +3,8 @@
 import { FaRegComment } from "react-icons/fa"
 import { BiRepost } from "react-icons/bi"
 import { FaRegHeart, FaHeart } from "react-icons/fa"
-import { FaRegBookmark } from "react-icons/fa6"
-import { FaTrash } from "react-icons/fa"
+import { FaRegBookmark, FaBookmark } from "react-icons/fa6"
+import { FaTrash, FaEdit } from "react-icons/fa"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -15,6 +15,9 @@ import { formatPostDate } from "../../utils/date/index"
 
 const Post = ({ post }) => {
   const [comment, setComment] = useState("")
+  const [editText, setEditText] = useState(post.text)
+  const [editImg, setEditImg] = useState(post.img)
+  const [editMode, setEditMode] = useState(false)
   const postOwner = post.user
 
   // react query for post deletion
@@ -37,6 +40,74 @@ const Post = ({ post }) => {
       toast.success("Post deleted successfully")
       // invalidate queries to fetch updated posts after deleting
       queryClient.invalidateQueries({ queryKey: ["posts"] })
+    },
+  })
+
+  const { mutate: updatePost, isPending: isUpdating } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch(`/api/posts/${post._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: editText, img: editImg }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          throw new Error("Failed to update post")
+        }
+        return data
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    onSuccess: (updatedPost) => {
+      toast.success("Post updated successfully")
+      setEditMode(false)
+      queryClient.setQueryData(["posts"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id === post._id) {
+            return updatedPost
+          }
+          return p
+        })
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  const { mutate: bookmarkPost, isPending: isBookmarking } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch(`/api/posts/bookmark/${post._id}`, {
+          method: "POST",
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          throw new Error("Failed to bookmark post")
+        }
+        return data
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["posts"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, isBookmarked: data.isBookmarked }
+          }
+          return p
+        })
+      })
+      if (data.isBookmarked) {
+        toast.success("Post bookmarked")
+      } else {
+        toast.success("Bookmark removed")
+      }
     },
   })
 
@@ -113,7 +184,8 @@ const Post = ({ post }) => {
   })
 
   const isLiked = post.likes.includes(authUser._id)
-  const isMyPost = authUser._id === post.user._id // bool
+  const isMyPost = authUser._id === post.user._id
+  const isBookmarked = authUser?.bookmarkedPosts?.includes(post._id) || post.isBookmarked || false
   const formattedDate = formatPostDate(post.createdAt)
 
   const handleDeletePost = () => {
@@ -127,8 +199,21 @@ const Post = ({ post }) => {
   }
 
   const handleLikePost = () => {
-    if (isLiking) return // if already liking, return
+    if (isLiking) return
     likePost()
+  }
+
+  const handleUpdatePost = () => {
+    if (!editText && !editImg) {
+      toast.error("Post cannot be empty")
+      return
+    }
+    updatePost()
+  }
+
+  const handleBookmarkPost = () => {
+    if (isBookmarking) return
+    bookmarkPost()
   }
 
   return (
@@ -165,7 +250,15 @@ const Post = ({ post }) => {
             <span className="text-slate-500 text-sm">{formattedDate}</span>
 
             {isMyPost && (
-              <div className="ml-auto">
+              <div className="ml-auto flex gap-2">
+                {!isUpdating && (
+                  <button
+                    onClick={() => setEditMode(!editMode)}
+                    className="p-2 rounded-full text-slate-400 hover:text-blue-500 hover:bg-blue-50 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  >
+                    <FaEdit className="w-4 h-4" />
+                  </button>
+                )}
                 {!isDeleting ? (
                   <button
                     onClick={handleDeletePost}
@@ -182,14 +275,52 @@ const Post = ({ post }) => {
             )}
           </div>
 
-          {/* Post Text */}
-          {post.text && <p className="text-slate-800 leading-relaxed mb-4">{post.text}</p>}
-
-          {/* Post Image */}
-          {post.img && (
-            <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200">
-              <img src={post.img || "/placeholder.svg"} className="w-full h-auto object-cover" alt="Post content" />
+          {/* Edit Mode */}
+          {editMode ? (
+            <div className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <textarea
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                rows={4}
+              />
+              {editImg && (
+                <div className="mt-3 mb-3 rounded-lg overflow-hidden border border-slate-200">
+                  <img src={editImg} alt="Post" className="w-full h-auto" />
+                </div>
+              )}
+              <div className="flex gap-2 justify-end mt-3">
+                <button
+                  onClick={() => {
+                    setEditMode(false)
+                    setEditText(post.text)
+                    setEditImg(post.img)
+                  }}
+                  className="px-4 py-2 bg-slate-200 text-slate-900 rounded-full font-medium hover:bg-slate-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdatePost}
+                  disabled={isUpdating}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors disabled:opacity-50"
+                >
+                  {isUpdating ? <LoadingSpinner size="sm" /> : "Save"}
+                </button>
+              </div>
             </div>
+          ) : (
+            <>
+              {/* Post Text */}
+              {post.text && <p className="text-slate-800 leading-relaxed mb-4">{post.text}</p>}
+
+              {/* Post Image */}
+              {post.img && (
+                <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200">
+                  <img src={post.img} className="w-full h-auto object-cover" alt="Post content" />
+                </div>
+              )}
+            </>
           )}
 
           {/* Action Buttons */}
@@ -236,8 +367,16 @@ const Post = ({ post }) => {
             </div>
 
             {/* Bookmark */}
-            <button className="p-2 rounded-full text-slate-500 hover:text-blue-500 hover:bg-blue-50 transition-colors">
-              <FaRegBookmark className="w-4 h-4" />
+            <button
+              onClick={handleBookmarkPost}
+              disabled={isBookmarking}
+              className={`p-2 rounded-full transition-colors ${
+                isBookmarked
+                  ? "text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                  : "text-slate-500 hover:text-blue-500 hover:bg-blue-50"
+              }`}
+            >
+              {isBookmarking ? <LoadingSpinner size="sm" /> : isBookmarked ? <FaBookmark className="w-4 h-4" /> : <FaRegBookmark className="w-4 h-4" />}
             </button>
           </div>
         </div>

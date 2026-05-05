@@ -4,6 +4,8 @@ import XSvg from "../svgs/X"
 import { MdHomeFilled } from "react-icons/md"
 import { IoNotifications } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
+import { FaBookmark } from "react-icons/fa6"
+import { MdSearch } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
 import { useQueryClient } from "@tanstack/react-query"
@@ -49,6 +51,18 @@ const Sidebar = () => {
       path: "/notifications",
       icon: IoNotifications,
       label: "Notifications",
+      iconSize: "w-6 h-6",
+    },
+    {
+      path: "/search",
+      icon: MdSearch,
+      label: "Search",
+      iconSize: "w-6 h-6",
+    },
+    {
+      path: "/bookmarks",
+      icon: FaBookmark,
+      label: "Bookmarks",
       iconSize: "w-6 h-6",
     },
     {
