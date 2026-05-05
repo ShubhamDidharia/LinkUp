@@ -54,9 +54,16 @@ export const generatePostContent = async (req, res) => {
     const postContent = await retryWithBackoff(async () => {
       console.log("[AI] Initializing GoogleGenerativeAI...");
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      
+      const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+      let lastModelError;
+      
+      for (const modelName of models) {
+        try {
+          console.log(`[AI] Trying model: ${modelName}`);
+          const model = genAI.getGenerativeModel({ model: modelName });
 
-      const prompt = `You are a creative social media post writer. Based on this description, generate engaging post content that feels natural and authentic.
+          const prompt = `You are a creative social media post writer. Based on this description, generate engaging post content that feels natural and authentic.
 
 User's description: "${description}"
 
@@ -69,17 +76,25 @@ Generate a single, compelling post (not a list). The post should:
 
 Return ONLY the post content text, nothing else. No JSON, no formatting, just the raw post text.`;
 
-      console.log("[AI] Calling model.generateContent...");
-      const result = await model.generateContent(prompt);
-      const text = result.response.text().trim();
+          console.log("[AI] Calling model.generateContent...");
+          const result = await model.generateContent(prompt);
+          const text = result.response.text().trim();
 
-      console.log("[AI] Got response from Gemini:", text?.substring(0, 50) + "...");
+          console.log("[AI] Got response from Gemini:", text?.substring(0, 50) + "...");
 
-      if (!text) {
-        throw new Error("Empty response from Gemini API");
+          if (!text) {
+            throw new Error("Empty response from Gemini API");
+          }
+
+          return text;
+        } catch (err) {
+          console.warn(`[AI] Failed with model ${modelName}:`, err.message);
+          lastModelError = err;
+          continue;
+        }
       }
-
-      return text;
+      
+      throw lastModelError || new Error("All AI models failed");
     }, 3, 1000);
 
     console.log("[AI] Successfully generated post content");
