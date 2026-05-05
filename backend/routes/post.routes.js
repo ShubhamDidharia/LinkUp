@@ -1,11 +1,14 @@
 import express from 'express';
 import { protectedRoute } from '../middlewares/protectRoute.js';
 import { getAllPosts , createPost, deletePost, addComment, likeUnlikePost, getLikedPosts , getFollowerPosts, getUserPosts, updatePost, bookmarkPost, getBookmarkedPosts } from '../controllers/post.controller.js';
+import { aiSearchPosts, smartSearchPosts } from '../controllers/search.controller.js';
 
 const router = express.Router();
 
 router.get('/all', protectedRoute,getAllPosts);
 router.get('/bookmarked', protectedRoute, getBookmarkedPosts);
+router.get('/search/ai', protectedRoute, aiSearchPosts);
+router.get('/search/smart', protectedRoute, smartSearchPosts);
 router.get('/user/:username', protectedRoute,getUserPosts);
 router.post('/create', protectedRoute, createPost);
 router.put('/:id', protectedRoute, updatePost);

@@ -2,15 +2,21 @@
 
 import { CiImageOn } from "react-icons/ci"
 import { BsEmojiSmileFill } from "react-icons/bs"
+import { MdOutlineAutoAwesome } from "react-icons/md"
 import { useRef, useState } from "react"
 import { IoCloseSharp } from "react-icons/io5"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-hot-toast"
+import LoadingSpinner from "../../components/common/LoadingSpinner"
 
 const CreatePost = () => {
   const [text, setText] = useState("")
   const [img, setImg] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showAIGenerator, setShowAIGenerator] = useState(false)
+  const [aiDescription, setAiDescription] = useState("")
+  const [generatedContent, setGeneratedContent] = useState("")
+  const [aiLoading, setAiLoading] = useState(false)
   const imgRef = useRef(null)
   const textareaRef = useRef(null)
   const { data: authUser } = useQuery({ queryKey: ["authUser"] })
@@ -264,6 +270,60 @@ const CreatePost = () => {
     setShowEmojiPicker(!showEmojiPicker)
   }
 
+  const generatePostContent = async () => {
+    if (!aiDescription.trim()) {
+      toast.error("Please describe what you want to post")
+      return
+    }
+
+    setAiLoading(true)
+    let retries = 0
+    const maxRetries = 3
+
+    const attemptGenerate = async () => {
+      try {
+        const res = await fetch("/api/ai/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ description: aiDescription }),
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to generate post content")
+        }
+
+        setGeneratedContent(data.content)
+      } catch (error) {
+        retries++
+        if (retries < maxRetries) {
+          console.log(`Attempt ${retries} failed. Retrying...`)
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries))
+          await attemptGenerate()
+        } else {
+          toast.error(error.message)
+          console.error("Error generating post content after retries:", error)
+          setAiLoading(false)
+        }
+      }
+    }
+
+    await attemptGenerate()
+    setAiLoading(false)
+  }
+
+  const handleUseGeneratedContent = () => {
+    setText(generatedContent)
+    setShowAIGenerator(false)
+    setAiDescription("")
+    setGeneratedContent("")
+    toast.success("Content added to post!")
+  }
+
   return (
     <div className="bg-white border-b border-slate-100 p-6">
       <div className="flex gap-4">
@@ -319,6 +379,16 @@ const CreatePost = () => {
                   onClick={() => imgRef.current.click()}
                 >
                   <CiImageOn className="w-6 h-6" />
+                </button>
+
+                {/* AI Post Generator Button */}
+                <button
+                  type="button"
+                  className="p-2 rounded-full text-purple-500 hover:bg-purple-50 transition-colors flex items-center gap-2"
+                  onClick={() => setShowAIGenerator(true)}
+                  title="Generate post with AI"
+                >
+                  <MdOutlineAutoAwesome className="w-6 h-6" />
                 </button>
 
                 {/* Emoji Button with Picker */}
@@ -386,6 +456,105 @@ const CreatePost = () => {
 
       {/* Overlay to close emoji picker when clicking outside */}
       {showEmojiPicker && <div className="fixed inset-0 z-10" onClick={() => setShowEmojiPicker(false)} />}
+
+      {/* AI Post Generator Modal */}
+      {showAIGenerator && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-30" onClick={() => !aiLoading && setShowAIGenerator(false)} />
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-96 z-40 overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+              <div className="flex items-center gap-2">
+                <MdOutlineAutoAwesome className="w-6 h-6 text-purple-500" />
+                <h2 className="text-xl font-bold text-slate-900">Generate Post with AI</h2>
+              </div>
+              <button
+                onClick={() => !aiLoading && setShowAIGenerator(false)}
+                className="p-2 rounded-full hover:bg-slate-100 transition-colors disabled:opacity-50"
+                disabled={aiLoading}
+              >
+                <IoCloseSharp className="w-5 h-5 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {!generatedContent ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      What do you want to post about?
+                    </label>
+                    <textarea
+                      className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-slate-900"
+                      placeholder="E.g., 'I just finished a marathon', 'Celebrating my promotion', 'Check out my new coffee shop'..."
+                      rows={4}
+                      value={aiDescription}
+                      onChange={(e) => setAiDescription(e.target.value)}
+                      disabled={aiLoading}
+                    />
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    💡 Tip: Be vague and descriptive. The AI will generate authentic, engaging post content for you.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-700 mb-2">Generated Post:</p>
+                    <div className="p-4 bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-xl">
+                      <p className="text-slate-800 leading-relaxed whitespace-pre-wrap">{generatedContent}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-end gap-3">
+              {generatedContent ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setGeneratedContent("")
+                      setAiDescription("")
+                    }}
+                    disabled={aiLoading}
+                    className="px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-full font-semibold transition-colors disabled:opacity-50"
+                  >
+                    Regenerate
+                  </button>
+                  <button
+                    onClick={handleUseGeneratedContent}
+                    disabled={aiLoading}
+                    className="px-4 py-2 bg-purple-500 text-white hover:bg-purple-600 rounded-full font-semibold transition-colors disabled:opacity-50"
+                  >
+                    Use This
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={generatePostContent}
+                  disabled={!aiDescription.trim() || aiLoading}
+                  className="px-4 py-2 bg-purple-500 text-white hover:bg-purple-600 rounded-full font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {aiLoading ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <MdOutlineAutoAwesome className="w-4 h-4" />
+                      Generate
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
