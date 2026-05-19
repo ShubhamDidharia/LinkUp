@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import SignUpPage from './pages/auth/signup/SignUpPage';
 import LoginPage from './pages/auth/login/LoginPage.jsx';
@@ -11,9 +12,45 @@ import SearchUsersPage from './pages/search/SearchUsersPage';
 import { Toaster } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import { useThemeStore } from './stores/useThemeStore';
 
 
 function App() {
+  const { theme } = useThemeStore();
+
+  // Initialize theme on mount
+  useEffect(() => {
+    // Get the theme from localStorage or use default
+    const stored = localStorage.getItem('theme-storage');
+    let initialTheme = 'light';
+    
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        initialTheme = parsed.state?.theme || 'light';
+      } catch {
+        initialTheme = 'light';
+      }
+    }
+
+    // Apply initial theme
+    const htmlElement = document.documentElement;
+    if (initialTheme === 'dark') {
+      htmlElement.classList.add('dark');
+    } else {
+      htmlElement.classList.remove('dark');
+    }
+  }, []);
+
+  // Sync theme changes
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    if (theme === 'dark') {
+      htmlElement.classList.add('dark');
+    } else {
+      htmlElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   const {data : authUser, isLoading} = useQuery({
     //we use aquery key to cache the data, so that we dont have to make a 
@@ -44,7 +81,7 @@ function App() {
  }
   return (
     <>
-      <div className='flex min-w-screen max-w-6xl mx-auto'>
+      <div className='flex min-w-screen max-w-6xl mx-auto bg-white dark:bg-slate-900 transition-colors duration-200'>
        {authUser && <Sidebar/>}
         <Routes>
           <Route path='/' element={authUser ? <HomePage/> : <Navigate to='/login'/>} />

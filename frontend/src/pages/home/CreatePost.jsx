@@ -325,11 +325,11 @@ const CreatePost = () => {
   }
 
   return (
-    <div className="bg-white border-b border-slate-100 p-6">
+    <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 p-6 transition-colors">
       <div className="flex gap-4">
         {/* User Avatar */}
         <div className="flex-shrink-0">
-          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-md">
+          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white dark:ring-slate-700 shadow-md">
             <img
               src={data.profileImg || "/avatar-placeholder.png"}
               alt="Your avatar"
@@ -342,10 +342,10 @@ const CreatePost = () => {
         <form className="flex-1" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Text Input with Dark Background */}
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+            <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4 border border-slate-200 dark:border-slate-600 focus-within:bg-white dark:focus-within:bg-slate-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
               <textarea
                 ref={textareaRef}
-                className="w-full text-xl text-slate-800 placeholder-slate-500 resize-none border-none focus:outline-none bg-transparent"
+                className="w-full text-xl text-slate-800 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 resize-none border-none focus:outline-none bg-transparent"
                 placeholder="What's happening?"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -355,10 +355,10 @@ const CreatePost = () => {
 
             {/* Image Preview */}
             {img && (
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200 max-w-md">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 max-w-md">
                 <button
                   type="button"
-                  className="absolute top-3 right-3 p-2 bg-black/70 rounded-full text-white hover:bg-black/80 transition-colors z-10"
+                  className="absolute top-3 right-3 p-2 bg-black/70 dark:bg-black/50 rounded-full text-white hover:bg-black/80 transition-colors z-10"
                   onClick={() => {
                     setImg(null)
                     imgRef.current.value = null
@@ -371,11 +371,11 @@ const CreatePost = () => {
             )}
 
             {/* Actions Bar */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
               <div className="flex items-center gap-4 relative">
                 <button
                   type="button"
-                  className="p-2 rounded-full text-blue-500 hover:bg-blue-50 transition-colors"
+                  className="p-2 rounded-full text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                   onClick={() => imgRef.current.click()}
                 >
                   <CiImageOn className="w-6 h-6" />
@@ -384,7 +384,7 @@ const CreatePost = () => {
                 {/* AI Post Generator Button */}
                 <button
                   type="button"
-                  className="p-2 rounded-full text-purple-500 hover:bg-purple-50 transition-colors flex items-center gap-2"
+                  className="p-2 rounded-full text-purple-500 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors flex items-center gap-2"
                   onClick={() => setShowAIGenerator(true)}
                   title="Generate post with AI"
                 >
@@ -396,7 +396,9 @@ const CreatePost = () => {
                   <button
                     type="button"
                     className={`p-2 rounded-full transition-colors ${
-                      showEmojiPicker ? "text-blue-600 bg-blue-50" : "text-blue-500 hover:bg-blue-50"
+                      showEmojiPicker 
+                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30" 
+                        : "text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     }`}
                     onClick={toggleEmojiPicker}
                   >
@@ -405,15 +407,15 @@ const CreatePost = () => {
 
                   {/* Emoji Picker Dropdown */}
                   {showEmojiPicker && (
-                    <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-2xl shadow-xl p-4 w-80 max-h-64 overflow-y-auto z-20">
+                    <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-4 w-80 max-h-64 overflow-y-auto z-20 transition-colors">
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-semibold text-slate-700">Choose an emoji</h3>
+                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Choose an emoji</h3>
                         <button
                           type="button"
                           onClick={() => setShowEmojiPicker(false)}
-                          className="p-1 rounded-full hover:bg-slate-100 transition-colors"
+                          className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                         >
-                          <IoCloseSharp className="w-4 h-4 text-slate-500" />
+                          <IoCloseSharp className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                         </button>
                       </div>
                       <div className="grid grid-cols-8 gap-2">
@@ -421,7 +423,7 @@ const CreatePost = () => {
                           <button
                             key={index}
                             type="button"
-                            className="p-2 text-xl hover:bg-slate-100 rounded-lg transition-colors"
+                            className="p-2 text-xl hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                             onClick={() => handleEmojiClick(emoji)}
                           >
                             {emoji}
@@ -444,8 +446,8 @@ const CreatePost = () => {
 
             {/* Error Message */}
             {isError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm">{error.message}</p>
+              <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg transition-colors">
+                <p className="text-red-600 dark:text-red-400 text-sm">{error.message}</p>
               </div>
             )}
           </div>

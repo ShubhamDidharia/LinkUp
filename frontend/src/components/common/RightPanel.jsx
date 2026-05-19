@@ -278,11 +278,11 @@ const RightPanel = () => {
     <div className="hidden lg:block w-80 p-4">
       <div className="sticky top-4 space-y-6">
         {/* Who to Follow Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-slate-100">
-            <h2 className="text-xl font-bold text-slate-900">Who to follow</h2>
-            <p className="text-sm text-slate-600 mt-1">Discover amazing people</p>
+          <div className="bg-gradient-to-r from-blue-50 dark:from-blue-900/30 to-purple-50 dark:to-purple-900/30 px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Who to follow</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Discover amazing people</p>
           </div>
 
           {/* Content */}
@@ -298,10 +298,10 @@ const RightPanel = () => {
 
             {!isLoading && suggestedUsers?.length === 0 && (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 dark:from-blue-900/40 to-purple-100 dark:to-purple-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="text-2xl">👥</div>
                 </div>
-                <p className="text-slate-500 text-sm">No suggestions available</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">No suggestions available</p>
               </div>
             )}
 
@@ -310,7 +310,7 @@ const RightPanel = () => {
                 {suggestedUsers.map((user, index) => (
                   <div
                     key={user._id}
-                    className="group p-3 rounded-xl hover:bg-slate-50 transition-all duration-200 animate-fade-in-up"
+                    className="group p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 animate-fade-in-up"
                     style={{
                       animationDelay: `${index * 100}ms`,
                     }}
@@ -318,21 +318,21 @@ const RightPanel = () => {
                     <div className="flex items-center justify-between">
                       <Link to={`/profile/${user.username}`} className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-md group-hover:ring-blue-200 transition-all duration-200">
+                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white dark:ring-slate-700 shadow-md group-hover:ring-blue-200 dark:group-hover:ring-blue-500 transition-all duration-200">
                             <img
                               src={user.profileImage || "/avatar-placeholder.png"}
                               alt={`${user.fullName}'s avatar`}
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-slate-700"></div>
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+                          <p className="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             {user.fullName}
                           </p>
-                          <p className="text-sm text-slate-500 truncate">@{user.username}</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 truncate">@{user.username}</p>
                         </div>
                       </Link>
 
@@ -355,10 +355,10 @@ const RightPanel = () => {
 
           {/* Footer */}
           {!isLoading && suggestedUsers?.length > 0 && (
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-100 dark:border-slate-700">
               <Link
                 to="/explore"
-                className="text-blue-500 hover:text-blue-600 text-sm font-medium hover:underline transition-colors"
+                className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 text-sm font-medium hover:underline transition-colors"
               >
                 Show more suggestions
               </Link>
@@ -367,18 +367,18 @@ const RightPanel = () => {
         </div>
 
         {/* Live News Feed Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-red-50 to-orange-50 px-6 py-4 border-b border-slate-100">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+          <div className="bg-gradient-to-r from-red-50 dark:from-red-900/30 to-orange-50 dark:to-orange-900/30 px-6 py-4 border-b border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-2">
-              <FaFire className="w-5 h-5 text-red-500" />
-              <h2 className="text-xl font-bold text-slate-900">What's happening</h2>
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <FaFire className="w-5 h-5 text-red-500 dark:text-red-400" />
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">What's happening</h2>
+              <div className="w-2 h-2 bg-red-500 dark:bg-red-400 rounded-full animate-pulse"></div>
             </div>
-            <p className="text-sm text-slate-600">Live news updates</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Live news updates</p>
           </div>
 
           {/* Enhanced News Category Tabs */}
-          <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+          <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30">
             <div className="relative">
               {/* Scroll Indicators */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
@@ -387,10 +387,10 @@ const RightPanel = () => {
                     const container = document.getElementById("news-categories")
                     container.scrollBy({ left: -120, behavior: "smooth" })
                   }}
-                  className="w-6 h-6 bg-white rounded-full shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  className="w-6 h-6 bg-white dark:bg-slate-700 rounded-full shadow-md border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-200 opacity-0 group-hover:opacity-100"
                   id="scroll-left-btn"
                 >
-                  <svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
@@ -563,18 +563,18 @@ const RightPanel = () => {
         </div>
 
         {/* Footer Links */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-            <Link to="/terms" className="hover:text-slate-700 transition-colors">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
+          <div className="flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
+            <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="hover:text-slate-700 transition-colors">
+            <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/cookies" className="hover:text-slate-700 transition-colors">
+            <Link to="/cookies" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               Cookie Policy
             </Link>
-            <Link to="/about" className="hover:text-slate-700 transition-colors">
+            <Link to="/about" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               About
             </Link>
           </div>

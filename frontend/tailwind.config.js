@@ -5,6 +5,7 @@ import defaultConfig from "shadcn/ui/tailwind.config"
 /** @type {import('tailwindcss').Config} */
 export default {
   ...defaultConfig,
+  darkMode: 'class',
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {

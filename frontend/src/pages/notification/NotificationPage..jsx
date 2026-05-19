@@ -3,7 +3,7 @@
 import { Link } from "react-router-dom"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 import { IoSettingsOutline } from "react-icons/io5"
-import { FaUser } from "react-icons/fa"
+import { FaUser, FaArrowLeft } from "react-icons/fa"
 import { FaHeart } from "react-icons/fa6"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-hot-toast"
@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast"
 const NotificationPage = () => {
   // react query for notifications
   const queryClient = useQueryClient()
+  const { data: authUser } = useQuery({ queryKey: ["authUser"] })
 
   const { data: notifications, isLoading } = useQuery({
     queryKey: ["notifications"],
@@ -49,17 +50,26 @@ const NotificationPage = () => {
   })
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-slate-50 to-white min-h-screen border-x border-slate-200">
+    <div className="flex-1 bg-gradient-to-b from-slate-50 dark:from-slate-900/50 to-white dark:to-slate-900 min-h-screen border-x border-slate-200 dark:border-slate-700 transition-colors">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <div className="sticky top-0 z-10 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 transition-colors">
         <div className="flex justify-between items-center p-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              {notifications?.length > 0
-                ? `${notifications.length} notification${notifications.length !== 1 ? "s" : ""}`
-                : "Stay updated"}
-            </p>
+          <div className="flex items-center gap-4">
+            <Link
+              to={`/profile/${authUser?.username}`}
+              className="p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
+              title="Go back to profile"
+            >
+              <FaArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Notifications</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                {notifications?.length > 0
+                  ? `${notifications.length} notification${notifications.length !== 1 ? "s" : ""}`
+                  : "Stay updated"}
+              </p>
+            </div>
           </div>
 
           <div className="relative group">
