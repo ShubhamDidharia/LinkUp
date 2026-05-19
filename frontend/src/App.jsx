@@ -10,6 +10,7 @@ import NotificationPage from './pages/notification/NotificationPage..jsx';
 import ProfilePage from './pages/profile/ProfilePage';
 import BookmarkedPostsPage from './pages/bookmarks/BookmarkedPostsPage';
 import SearchUsersPage from './pages/search/SearchUsersPage';
+import SettingsPage from './pages/settings/SettingsPage';
 import { Toaster } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -111,6 +112,7 @@ function App() {
           <Route path='/profile/:username' element={authUser ? <ProfilePage/> : <Navigate to='/login'/>}/>
           <Route path='/bookmarks' element={authUser ? <BookmarkedPostsPage/> : <Navigate to='/login'/>}/>
           <Route path='/search' element={authUser ? <SearchUsersPage/> : <Navigate to='/login'/>}/>
+          <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to='/login'/>}/>
         </Routes>
         {authUser && <RightPanel/>}
         <Toaster/>

@@ -84,22 +84,22 @@ const EditProfileModal = ({ authUser }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full shadow-sm hover:shadow-md flex items-center gap-2">
+        <Button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full shadow-sm hover:shadow-md flex items-center gap-2 border-0">
           <MdEdit className="w-4 h-4" />
           Edit profile
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="bg-gradient-to-r from-blue-50 to-purple-50 -mx-6 -mt-6 px-6 py-6 border-b border-slate-100">
-          <DialogTitle className="text-2xl font-bold text-slate-900">Edit Profile</DialogTitle>
-          <DialogDescription className="text-slate-600 mt-1">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-2xl p-0 sm:rounded-2xl">
+        <DialogHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-800/80 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+          <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">Edit Profile</DialogTitle>
+          <DialogDescription className="text-slate-600 dark:text-slate-400 mt-1">
             Update your personal information
           </DialogDescription>
         </DialogHeader>
 
         <form
-          className="space-y-6 py-6"
+          className="space-y-6 px-6 pb-6 pt-4"
           onSubmit={(e) => {
             e.preventDefault()
             updateProfile()
@@ -107,7 +107,7 @@ const EditProfileModal = ({ authUser }) => {
         >
               {/* Personal Information Section */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <FaUser className="w-4 h-4 text-blue-500" />
                   Personal Information
                 </h4>
@@ -115,7 +115,7 @@ const EditProfileModal = ({ authUser }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Full Name */}
                   <div>
-                    <Label htmlFor="fullName" className="text-sm font-medium text-slate-700 mb-2">
+                    <Label htmlFor="fullName" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                       Full Name
                     </Label>
                     <Input
@@ -125,13 +125,13 @@ const EditProfileModal = ({ authUser }) => {
                       value={formData.fullName}
                       name="fullName"
                       onChange={handleInputChange}
-                      className="rounded-xl"
+                      className="rounded-xl h-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     />
                   </div>
 
                   {/* Username */}
                   <div>
-                    <Label htmlFor="username" className="text-sm font-medium text-slate-700 mb-2">
+                    <Label htmlFor="username" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                       Username
                     </Label>
                     <Input
@@ -141,18 +141,18 @@ const EditProfileModal = ({ authUser }) => {
                       value={formData.username}
                       name="username"
                       onChange={handleInputChange}
-                      className="rounded-xl"
+                      className="rounded-xl h-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 mb-2">
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Email
                   </Label>
-                  <div className="relative">
-                    <FaEnvelope className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                  <div className="relative flex items-center">
+                    <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                     <Input
                       id="email"
                       type="email"
@@ -160,14 +160,14 @@ const EditProfileModal = ({ authUser }) => {
                       value={formData.email}
                       name="email"
                       onChange={handleInputChange}
-                      className="pl-10 rounded-xl"
+                      className="pl-10 h-10 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <Label htmlFor="bio" className="text-sm font-medium text-slate-700 mb-2">
+                  <Label htmlFor="bio" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Bio
                   </Label>
                   <div className="relative">
@@ -179,18 +179,18 @@ const EditProfileModal = ({ authUser }) => {
                       name="bio"
                       onChange={handleInputChange}
                       rows={3}
-                      className="pl-10 rounded-xl resize-none"
+                      className="pl-10 rounded-xl resize-none bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 {/* Link */}
                 <div>
-                  <Label htmlFor="link" className="text-sm font-medium text-slate-700 mb-2">
+                  <Label htmlFor="link" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Website
                   </Label>
-                  <div className="relative">
-                    <FaLink className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                  <div className="relative flex items-center">
+                    <FaLink className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                     <Input
                       id="link"
                       type="url"
@@ -198,15 +198,15 @@ const EditProfileModal = ({ authUser }) => {
                       value={formData.link}
                       name="link"
                       onChange={handleInputChange}
-                      className="pl-10 rounded-xl"
+                      className="pl-10 h-10 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Security Section */}
-              <div className="space-y-4 pt-6 border-t border-slate-200">
-                <h4 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+              <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800">
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <FaLock className="w-4 h-4 text-blue-500" />
                   Security
                 </h4>
@@ -214,11 +214,11 @@ const EditProfileModal = ({ authUser }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Current Password */}
                   <div>
-                    <Label htmlFor="currentPassword" className="text-sm font-medium text-slate-700 mb-2">
+                    <Label htmlFor="currentPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                       Current Password
                     </Label>
-                    <div className="relative">
-                      <FaLock className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <div className="relative flex items-center">
+                      <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                       <Input
                         id="currentPassword"
                         type="password"
@@ -226,18 +226,18 @@ const EditProfileModal = ({ authUser }) => {
                         value={formData.currentPassword}
                         name="currentPassword"
                         onChange={handleInputChange}
-                        className="pl-10 rounded-xl"
+                        className="pl-10 h-10 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       />
                     </div>
                   </div>
 
                   {/* New Password */}
                   <div>
-                    <Label htmlFor="newPassword" className="text-sm font-medium text-slate-700 mb-2">
+                    <Label htmlFor="newPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                       New Password
                     </Label>
-                    <div className="relative">
-                      <FaLock className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <div className="relative flex items-center">
+                      <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                       <Input
                         id="newPassword"
                         type="password"
@@ -245,33 +245,33 @@ const EditProfileModal = ({ authUser }) => {
                         value={formData.newPassword}
                         name="newPassword"
                         onChange={handleInputChange}
-                        className="pl-10 rounded-xl"
+                        className="pl-10 h-10 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus-visible:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <p className="text-sm text-blue-700">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl p-4">
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
                     <strong>Note:</strong> Leave password fields empty if you don't want to change your password.
                   </p>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-6 border-t border-slate-200">
+              <div className="flex gap-4 pt-6 border-t border-slate-200 dark:border-slate-800">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="flex-1 py-3 px-4 rounded-xl"
+                  className="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 bg-transparent"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isUpdatingProfile}
-                  className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl text-white font-semibold flex items-center justify-center gap-2 border-0"
                 >
                   {isUpdatingProfile ? (
                     <>

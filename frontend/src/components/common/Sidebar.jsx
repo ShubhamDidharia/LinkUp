@@ -2,7 +2,7 @@
 
 import XSvg from "../svgs/X"
 import { MdHomeFilled } from "react-icons/md"
-import { IoNotifications } from "react-icons/io5"
+import { IoNotifications, IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { FaBookmark } from "react-icons/fa6"
 import { MdSearch } from "react-icons/md"
@@ -59,6 +59,12 @@ const Sidebar = () => {
       path: "/bookmarks",
       icon: FaBookmark,
       label: "Bookmarks",
+      iconSize: "w-6 h-6",
+    },
+    {
+      path: "/settings",
+      icon: IoSettingsOutline,
+      label: "Settings",
       iconSize: "w-6 h-6",
     },
 

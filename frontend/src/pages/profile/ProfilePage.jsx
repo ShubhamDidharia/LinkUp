@@ -9,7 +9,7 @@ import { POSTS } from "../../utils/db/dummy"
 import { useParams } from "react-router-dom"
 import { useEffect } from "react"
 import { FaArrowLeft, FaCamera, FaUserPlus, FaUserMinus } from "react-icons/fa"
-import { IoCalendarOutline, IoNotifications } from "react-icons/io5"
+import { IoCalendarOutline, IoNotifications, IoSettingsOutline } from "react-icons/io5"
 import { FaLink } from "react-icons/fa"
 import { MdEdit, MdVerified } from "react-icons/md"
 import { useQuery } from "@tanstack/react-query"
@@ -129,16 +129,26 @@ const ProfilePage = () => {
                   </div>
                   <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">{POSTS?.length} posts</span>
                 </div>
-                {/* Notification Bell Icon */}
-                <Link
-                  to="/notifications"
-                  className="relative p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 group"
-                  title="Notifications"
-                >
-                  <IoNotifications className="w-6 h-6 text-slate-500 dark:text-slate-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
-                  {/* Notification indicator dot (show conditionally) */}
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                </Link>
+                <div className="flex items-center gap-2">
+                  {/* Notification Bell Icon */}
+                  <Link
+                    to="/notifications"
+                    className="relative p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 group"
+                    title="Notifications"
+                  >
+                    <IoNotifications className="w-6 h-6 text-slate-500 dark:text-slate-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
+                    {/* Notification indicator dot (show conditionally) */}
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  </Link>
+                  {/* Settings Icon */}
+                  <Link
+                    to="/settings"
+                    className="relative p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 group"
+                    title="Settings"
+                  >
+                    <IoSettingsOutline className="w-6 h-6 text-slate-500 dark:text-slate-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
+                  </Link>
+                </div>
               </div>
             </div>
 

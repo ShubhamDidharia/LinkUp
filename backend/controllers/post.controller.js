@@ -16,9 +16,14 @@ export const getAllPosts = async(req, res) =>{
         // Your DB stores just the ID (efficient & normalized).
         // But your frontend needs the full user details (like username, avatar, etc.),
        // populate() helps avoid additional DB queries on the client.
-       // So you just send the fully enriched response (e.g. post + user details) directly from your backend to frontend.
+        // So you just send the fully enriched response (e.g. post + user details) directly from your backend to frontend.
 
-        const posts   = await Post.find().sort({createdAt: -1}).populate({
+        const query = {};
+        if (req.user && req.user.hideNSFW) {
+            query.isNsfw = { $ne: true };
+        }
+
+        const posts   = await Post.find(query).sort({createdAt: -1}).populate({
             path: 'user',
             select: '-password'
         }).populate({path : 'comments.user', select : "-password -email -bio -link" }) ;
@@ -200,7 +205,12 @@ export const getFollowerPosts = async(req,res)=>{
 
         const following = user.following;
         // find posts whose owner is found in following list of user
-        const feedPosts = await Post.find({user : {$in: following}}).sort({createdAt: -1}).populate({
+        const query = {user : {$in: following}};
+        if (req.user && req.user.hideNSFW) {
+            query.isNsfw = { $ne: true };
+        }
+        
+        const feedPosts = await Post.find(query).sort({createdAt: -1}).populate({
             path: 'user',
             select: '-password'
         }).populate({

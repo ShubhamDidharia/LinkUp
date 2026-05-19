@@ -185,3 +185,25 @@ export const searchUsers = async(req,res)=>{
         res.status(500).json({error: "Internal server error"});
     }
 }
+
+export const updateUserSettings = async(req,res)=>{
+    try {
+        const userId = req.user._id;
+        const { hideNSFW } = req.body;
+
+        const user = await User.findById(userId);
+        if(!user) return res.status(404).json({error: "User not found"});
+
+        if (hideNSFW !== undefined) {
+            user.hideNSFW = hideNSFW;
+        }
+
+        await user.save();
+        user.password = undefined;
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error("Error updating user settings:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
