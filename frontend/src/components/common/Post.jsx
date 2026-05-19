@@ -4,7 +4,7 @@ import { FaRegComment } from "react-icons/fa"
 import { BiRepost } from "react-icons/bi"
 import { FaRegHeart, FaHeart } from "react-icons/fa"
 import { FaRegBookmark, FaBookmark } from "react-icons/fa6"
-import { FaTrash, FaEdit } from "react-icons/fa"
+import { FaTrash, FaEdit, FaFlag } from "react-icons/fa"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -12,6 +12,7 @@ import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import LoadingSpinner from "./LoadingSpinner"
 import { formatPostDate } from "../../utils/date/index"
+import ReportModal from "./ReportModal"
 
 const Post = ({ post }) => {
   const [comment, setComment] = useState("")
@@ -19,6 +20,12 @@ const Post = ({ post }) => {
   const [editImg, setEditImg] = useState(post.img)
   const [editMode, setEditMode] = useState(false)
   const [showNsfw, setShowNsfw] = useState(false)
+  const [reportModalData, setReportModalData] = useState({
+    isOpen: false,
+    reportedUser: null,
+    reportType: "post",
+    targetId: null
+  })
   const postOwner = post.user
 
   // react query for post deletion
@@ -345,6 +352,22 @@ const Post = ({ post }) => {
                 )}
               </div>
             )}
+            {!isMyPost && (
+              <div className="ml-auto flex gap-2">
+                <button
+                  onClick={() => setReportModalData({
+                    isOpen: true,
+                    reportedUser: postOwner._id,
+                    reportType: "post",
+                    targetId: post._id
+                  })}
+                  className="p-2 rounded-full text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  title="Report Post"
+                >
+                  <FaFlag className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Edit Mode */}
@@ -519,9 +542,22 @@ const Post = ({ post }) => {
                   />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 w-full">
                     <span className="font-semibold text-slate-900 dark:text-slate-100">{comment.user.fullName}</span>
                     <span className="text-slate-500 dark:text-slate-400 text-sm">@{comment.user.username}</span>
+                    {comment.user._id !== authUser._id && (
+                      <button
+                        onClick={() => setReportModalData({
+                          isOpen: true,
+                          reportedUser: comment.user._id,
+                          reportType: "comment",
+                          targetId: comment._id
+                        })}
+                        className="ml-auto text-xs text-rose-500 hover:underline transition-all cursor-pointer font-bold"
+                      >
+                        Report
+                      </button>
+                    )}
                   </div>
                   <p className="text-slate-700 dark:text-slate-300">{comment.text}</p>
                 </div>
@@ -565,6 +601,13 @@ const Post = ({ post }) => {
           <button>close</button>
         </form>
       </dialog>
+      <ReportModal
+        isOpen={reportModalData.isOpen}
+        onClose={() => setReportModalData(prev => ({ ...prev, isOpen: false }))}
+        reportedUser={reportModalData.reportedUser}
+        reportType={reportModalData.reportType}
+        targetId={reportModalData.targetId}
+      />
     </article>
   )
 }

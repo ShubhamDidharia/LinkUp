@@ -71,6 +71,11 @@ const userSchema = new mongoose.Schema({
     },
     lastFlaggedAt: {
         type: Date
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 },{timestamps: true});
 

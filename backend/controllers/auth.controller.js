@@ -1,10 +1,17 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateTokenAndSetCookie } from '../lib/utils/generateToken.js';
+import { checkUsername } from '../utils/profileModerator.js';
 
 export const signup = async (req, res) => {
 	try {
 		const { fullName, username, email, password } = req.body;
+
+		// Moderate username
+		const usernameResult = checkUsername(username);
+		if (!usernameResult.allowed) {
+			return res.status(400).json({ message: 'Username not allowed' });
+		}
 
 		// Validate email format
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

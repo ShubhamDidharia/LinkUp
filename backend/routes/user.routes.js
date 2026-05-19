@@ -9,6 +9,7 @@ router.get('/suggested',protectedRoute, getSuggestedUsers);
 router.get('/search', protectedRoute, searchUsers);
 router.post('/follow/:id',protectedRoute, followUnfollowUser);
 router.post('/update',protectedRoute, updateUserProfile);
+router.put('/profile', protectedRoute, updateUserProfile);
 router.post('/settings', protectedRoute, updateUserSettings);
 
 export default router;

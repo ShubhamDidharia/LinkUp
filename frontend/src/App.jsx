@@ -15,12 +15,14 @@ import { Toaster } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import { useThemeStore } from './stores/useThemeStore';
+import AdminLayout from './components/admin/AdminLayout';
 
 
 function App() {
   const { theme } = useThemeStore();
   const location = useLocation();
   const isLandingPage = location.pathname === '/' && !localStorage.getItem('theme-storage');
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   // Initialize theme on mount
   useEffect(() => {
@@ -83,6 +85,23 @@ function App() {
     </div>
   )
  }
+
+  // Admin route layout
+  if (isAdminRoute) {
+    if (!authUser) return <Navigate to='/login' />;
+    if (authUser.role !== 'admin') return <Navigate to='/' />;
+
+    return (
+      <>
+        <div className='w-full min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200'>
+          <Routes>
+            <Route path='/admin/*' element={<AdminLayout />} />
+          </Routes>
+          <Toaster />
+        </div>
+      </>
+    );
+  }
 
   // Landing page with full width
   if (!authUser && location.pathname === '/') {

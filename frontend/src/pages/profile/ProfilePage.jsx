@@ -8,7 +8,7 @@ import EditProfileModal from "./EditProfileModal"
 import { POSTS } from "../../utils/db/dummy"
 import { useParams } from "react-router-dom"
 import { useEffect } from "react"
-import { FaArrowLeft, FaCamera, FaUserPlus, FaUserMinus } from "react-icons/fa"
+import { FaArrowLeft, FaCamera, FaUserPlus, FaUserMinus, FaFlag } from "react-icons/fa"
 import { IoCalendarOutline, IoNotifications, IoSettingsOutline } from "react-icons/io5"
 import { FaLink } from "react-icons/fa"
 import { MdEdit, MdVerified } from "react-icons/md"
@@ -17,11 +17,29 @@ import { formatMemberSinceDate } from "../../utils/date"
 import useFollow from "../../hooks/useFollow"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import ReportModal from "../../components/common/ReportModal"
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null)
   const [profileImg, setProfileImg] = useState(null)
   const [feedType, setFeedType] = useState("posts")
+  const [reportModalData, setReportModalData] = useState({
+    isOpen: false,
+    reportedUser: null,
+    reportType: "profileImage",
+    targetId: null
+  })
+
+  const handleReportProfile = (type) => {
+    if (!user) return
+    setReportModalData({
+      isOpen: true,
+      reportedUser: user._id,
+      reportType: type,
+      targetId: null
+    })
+  }
+
   const coverImgRef = useRef(null)
   const profileImgRef = useRef(null)
   const queryClient = useQueryClient()
@@ -234,32 +252,57 @@ const ProfilePage = () => {
                 </div>
               )}
               {!isMyProfile && (
-                <button
-                  className={`px-8 py-3 rounded-full font-semibold transition-all duration-200 flex items-center gap-2 ${
-                    amIFollowing
-                      ? "bg-slate-100 text-slate-700 hover:bg-red-50 hover:text-red-600 border-2 border-slate-300 hover:border-red-300"
-                      : "bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl"
-                  }`}
-                  onClick={() => follow(user._id)}
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                      Loading...
-                    </>
-                  ) : amIFollowing ? (
-                    <>
-                      <FaUserMinus className="w-4 h-4" />
-                      Unfollow
-                    </>
-                  ) : (
-                    <>
-                      <FaUserPlus className="w-4 h-4" />
-                      Follow
-                    </>
-                  )}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    className={`px-8 py-3 rounded-full font-semibold transition-all duration-200 flex items-center gap-2 ${
+                      amIFollowing
+                        ? "bg-slate-100 text-slate-700 hover:bg-red-50 hover:text-red-600 border-2 border-slate-300 hover:border-red-300"
+                        : "bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl"
+                    }`}
+                    onClick={() => follow(user._id)}
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                        Loading...
+                      </>
+                    ) : amIFollowing ? (
+                      <>
+                        <FaUserMinus className="w-4 h-4" />
+                        Unfollow
+                      </>
+                    ) : (
+                      <>
+                        <FaUserPlus className="w-4 h-4" />
+                        Follow
+                      </>
+                    )}
+                  </button>
+
+                  <div className="dropdown dropdown-end">
+                    <div tabIndex={0} role="button" className="btn btn-circle bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 min-h-12 h-12 w-12 flex items-center justify-center p-0">
+                      <FaFlag className="w-4 h-4" />
+                    </div>
+                    <ul tabIndex={0} className="dropdown-content menu bg-slate-900 border border-slate-800 rounded-xl z-[30] w-52 p-2 shadow-2xl mt-2 text-slate-300">
+                      <li>
+                        <button type="button" onClick={() => handleReportProfile("profileImage")}>
+                          Report Profile Image
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" onClick={() => handleReportProfile("coverImage")}>
+                          Report Cover Image
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" onClick={() => handleReportProfile("username")}>
+                          Report Username
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -364,6 +407,14 @@ const ProfilePage = () => {
             <Posts feedType={feedType} username={username} userId={user._id} />
           </div>
         )}
+        {/* Report Profile Modal */}
+        <ReportModal
+          isOpen={reportModalData.isOpen}
+          onClose={() => setReportModalData(prev => ({ ...prev, isOpen: false }))}
+          reportedUser={reportModalData.reportedUser}
+          reportType={reportModalData.reportType}
+          targetId={reportModalData.targetId}
+        />
       </div>
     </div>
   )
