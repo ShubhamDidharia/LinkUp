@@ -127,19 +127,36 @@ const Post = ({ post }) => {
         throw new Error(error)
       }
     },
-    onSuccess: (data) => {
-      toast.success(`Post marked as ${data.isNsfw ? "NSFW" : "Safe"}`)
+    // Optimistic update - update UI before server response
+    onMutate: async () => {
+      // Cancel any outgoing refetches to prevent overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey: ["posts"] })
+
+      // Snapshot previous data
+      const previousPosts = queryClient.getQueryData(["posts"])
+
+      // Optimistically update the cache
       queryClient.setQueryData(["posts"], (oldData) => {
-        return oldData.map((p) => {
+        return oldData?.map((p) => {
           if (p._id === post._id) {
-            return { ...p, isNsfw: data.isNsfw }
+            return { ...p, isNsfw: !p.isNsfw }
           }
           return p
         })
       })
+
+      return { previousPosts }
     },
-    onError: (error) => {
-      toast.error(error.message)
+    // On success, show confirmation toast
+    onSuccess: (data) => {
+      toast.success(`Post marked as ${data.isNsfw ? "NSFW" : "Safe"}`)
+    },
+    // On error, revert to previous state
+    onError: (error, variables, context) => {
+      if (context?.previousPosts) {
+        queryClient.setQueryData(["posts"], context.previousPosts)
+      }
+      toast.error("Failed to update NSFW status. Please try again.")
     },
   })
 
@@ -283,7 +300,11 @@ const Post = ({ post }) => {
 
             {isMyPost && (
               <div className="ml-auto flex gap-2">
-                {!isTogglingNsfw && (
+                {isTogglingNsfw ? (
+                  <div className="p-2 rounded-full flex items-center justify-center">
+                    <LoadingSpinner size="sm" />
+                  </div>
+                ) : (
                   <button
                     onClick={() => toggleNsfw()}
                     className={`p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 ${
@@ -292,6 +313,7 @@ const Post = ({ post }) => {
                         : "text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
                     }`}
                     title={post.isNsfw ? "Mark as Safe" : "Mark as NSFW"}
+                    disabled={isTogglingNsfw}
                   >
                     <span className="text-xs font-bold">NSFW</span>
                   </button>
