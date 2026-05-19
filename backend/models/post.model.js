@@ -29,11 +29,21 @@ const postSchema = new mongoose.Schema({
            }
         }
     ],
-    isNsfw: {
+    isNSFW: {
+        type: Boolean,
+        default: false
+    },
+    autoFlagged: {
+        type: Boolean,
+        default: false
+    },
+    flagReasons: [{
+        type: String
+    }],
+    isBlurred: {
         type: Boolean,
         default: false
     }
-
 },{timestamps:true})
 
 const Post = mongoose.model("Post", postSchema);

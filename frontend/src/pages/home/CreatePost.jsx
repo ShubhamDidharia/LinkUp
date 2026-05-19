@@ -12,7 +12,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner"
 const CreatePost = () => {
   const [text, setText] = useState("")
   const [img, setImg] = useState(null)
-  const [isNsfw, setIsNsfw] = useState(false)
+  const [isNSFW, setIsNSFW] = useState(false)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showAIGenerator, setShowAIGenerator] = useState(false)
   const [aiDescription, setAiDescription] = useState("")
@@ -203,28 +203,57 @@ const CreatePost = () => {
     isError,
     error,
   } = useMutation({
-    mutationFn: async ({ text, img, isNsfw }) => {
+    mutationFn: async ({ text, img, isNSFW }) => {
       try {
+        let imageUrl = null;
+        if (img) {
+          const uploadRes = await fetch("/api/posts/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ img }),
+          });
+          const uploadData = await uploadRes.json();
+          if (!uploadRes.ok) throw new Error(uploadData.error || "Failed to upload image");
+          imageUrl = uploadData.imageUrl;
+        }
+
         const res = await fetch("/api/posts/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ text, img, isNsfw }),
+          body: JSON.stringify({ text, imageUrl, isNSFW }),
         })
         const data = await res.json()
         if (!res.ok) {
-          throw new Error("Failed to create post")
+          throw new Error(data.message || data.error || "Failed to create post")
         }
         return data
       } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
     },
-    onSuccess: () => {
-      toast.success("Post created successfully")
+    onSuccess: (data) => {
+      if (data.autoFlagged) {
+        toast.error("Your post was automatically flagged as NSFW and blurred.");
+      } else {
+        toast.success("Post created successfully");
+      }
+
+      if (data.userStatus === 'under_review') {
+        toast.warning("Your account is under review due to multiple violations.");
+      } else if (data.userStatus === 'suspended') {
+        toast.error("Your account has been suspended.");
+      }
+
       // invalidate queries to fetch updated posts after creating
       queryClient.invalidateQueries({ queryKey: ["posts"] })
+      queryClient.invalidateQueries({ queryKey: ["authUser"] })
+      setText("")
+      setImg(null)
+      setIsNSFW(false)
     },
   })
 
@@ -234,10 +263,7 @@ const CreatePost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    createPost({ text, img, isNsfw })
-    setText("")
-    setImg(null)
-    setIsNsfw(false)
+    createPost({ text, img, isNSFW })
   }
 
   const handleImgChange = (e) => {
@@ -342,7 +368,18 @@ const CreatePost = () => {
 
         {/* Post Form */}
         <form className="flex-1" onSubmit={handleSubmit}>
+          {authUser?.status === 'suspended' ? (
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+              <h3 className="text-red-600 dark:text-red-400 font-bold text-lg mb-2">Account Suspended</h3>
+              <p className="text-red-500 dark:text-red-300">You cannot create new posts because your account has been suspended due to repeated violations.</p>
+            </div>
+          ) : (
           <div className="space-y-4">
+            {authUser?.status === 'under_review' && (
+              <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-amber-800 dark:text-amber-300 text-sm font-semibold">
+                ⚠️ Your account is under review due to multiple violations.
+              </div>
+            )}
             {/* Text Input with Dark Background */}
             <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4 border border-slate-200 dark:border-slate-600 focus-within:bg-white dark:focus-within:bg-slate-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
               <textarea
@@ -440,11 +477,11 @@ const CreatePost = () => {
                 <label className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                   <input
                     type="checkbox"
-                    checked={isNsfw}
-                    onChange={(e) => setIsNsfw(e.target.checked)}
+                    checked={isNSFW}
+                    onChange={(e) => setIsNSFW(e.target.checked)}
                     className="w-4 h-4 text-red-500 rounded cursor-pointer"
                   />
-                  <span className="text-sm font-medium text-red-500 dark:text-red-400">NSFW</span>
+                  <span className="text-sm font-medium text-red-500 dark:text-red-400">Mark as Sensitive (NSFW)</span>
                 </label>
               </div>
 
@@ -464,6 +501,7 @@ const CreatePost = () => {
               </div>
             )}
           </div>
+          )}
 
           <input type="file" accept="image/*" hidden ref={imgRef} onChange={handleImgChange} />
         </form>

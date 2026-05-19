@@ -55,6 +55,22 @@ const userSchema = new mongoose.Schema({
     hideNSFW: {
         type: Boolean,
         default: true
+    },
+    strikes: {
+        type: Number,
+        default: 0
+    },
+    autoFlaggedPosts: {
+        type: Number,
+        default: 0
+    },
+    status: {
+        type: String,
+        enum: ['active', 'under_review', 'suspended'],
+        default: 'active'
+    },
+    lastFlaggedAt: {
+        type: Date
     }
 },{timestamps: true});
 

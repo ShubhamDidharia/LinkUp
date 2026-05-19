@@ -1,6 +1,6 @@
 import express from 'express';
 import { protectedRoute } from '../middlewares/protectRoute.js';
-import { getAllPosts , createPost, deletePost, addComment, likeUnlikePost, getLikedPosts , getFollowerPosts, getUserPosts, updatePost, bookmarkPost, getBookmarkedPosts, toggleNsfwPost } from '../controllers/post.controller.js';
+import { getAllPosts , createPost, deletePost, addComment, likeUnlikePost, getLikedPosts , getFollowerPosts, getUserPosts, updatePost, bookmarkPost, getBookmarkedPosts, toggleNsfwPost, uploadImage } from '../controllers/post.controller.js';
 import { aiSearchPosts, smartSearchPosts } from '../controllers/search.controller.js';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get('/bookmarked', protectedRoute, getBookmarkedPosts);
 router.get('/search/ai', protectedRoute, aiSearchPosts);
 router.get('/search/smart', protectedRoute, smartSearchPosts);
 router.get('/user/:username', protectedRoute,getUserPosts);
+router.post('/upload', protectedRoute, uploadImage);
 router.post('/create', protectedRoute, createPost);
 router.put('/:id', protectedRoute, updatePost);
 router.post('/like/:id', protectedRoute, likeUnlikePost);

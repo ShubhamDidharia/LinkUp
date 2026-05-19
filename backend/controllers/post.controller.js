@@ -2,6 +2,7 @@ import User from '../models/user.model.js';
 import Post from '../models/post.model.js';
 import {v2 as cloudinary} from 'cloudinary';
 import Notification from '../models/notification.model.js';
+import { moderatePost } from '../utils/moderatePost.js';
 
 export const getAllPosts = async(req, res) =>{
     try {
@@ -20,7 +21,7 @@ export const getAllPosts = async(req, res) =>{
 
         const query = {};
         if (req.user && req.user.hideNSFW) {
-            query.isNsfw = { $ne: true };
+            query.isNSFW = { $ne: true };
         }
 
         const posts   = await Post.find(query).sort({createdAt: -1}).populate({
@@ -42,33 +43,69 @@ export const getAllPosts = async(req, res) =>{
 
 export const createPost = async(req, res)=>{
     try {
-        const {text, isNsfw} = req.body
-        let {img} = req.body
-        const userId = req.user._id // protectedRoute middleware
+        const {text, isNSFW, imageUrl} = req.body;
+        const userId = req.user._id;
         
-        const user = await User.findById(userId)
+        const user = await User.findById(userId);
         if(!user){
-            return res.status(404).json({error: "User not found"})
+            return res.status(404).json({error: "User not found"});
         }
 
-        if(!text && !img){
-            res.status(400).json({error: "Post cannot be empty"})
+        if (user.status === 'suspended') {
+            return res.status(403).json({ message: 'Your account is suspended due to repeated violations.' });
         }
 
-        if(img){
-            const uploadedResponse = await cloudinary.uploader.upload(img);
-            img = uploadedResponse.secure_url;
+        if(!text && !imageUrl){
+            return res.status(400).json({error: "Post cannot be empty"});
         }
 
-        const newPost = new Post({user : userId, text, img, isNsfw: isNsfw || false})
+        if (isNSFW) {
+            const newPost = new Post({
+                user: userId, 
+                text, 
+                img: imageUrl, 
+                isNSFW: true,
+                autoFlagged: false
+            });
+            await newPost.save();
+            return res.status(201).json({ posted: true, autoFlagged: false, post: newPost });
+        }
 
+        const moderationResult = await moderatePost({ text, imageUrl }, user);
+
+        if (moderationResult.autoTaggedNSFW) {
+            const newPost = new Post({
+                user: userId,
+                text,
+                img: imageUrl,
+                isNSFW: true,
+                autoFlagged: true,
+                isBlurred: true,
+                flagReasons: moderationResult.reasons
+            });
+            await newPost.save();
+            return res.status(200).json({
+                posted: true,
+                autoFlagged: true,
+                userStatus: user.status,
+                message: 'Your post was auto-flagged as NSFW and has been blurred.',
+                post: newPost
+            });
+        }
+
+        const newPost = new Post({
+            user: userId, 
+            text, 
+            img: imageUrl, 
+            isNSFW: false,
+            autoFlagged: false
+        });
         await newPost.save();
-        res.status(201).json(newPost)
-        
+        return res.status(201).json({ posted: true, autoFlagged: false, post: newPost });
 
     } catch (error) {
         console.error("Error creating post:", error);
-        res.status(500).json({error: "Internal server error"})
+        res.status(500).json({error: "Internal server error"});
     }
 }
 
@@ -207,7 +244,7 @@ export const getFollowerPosts = async(req,res)=>{
         // find posts whose owner is found in following list of user
         const query = {user : {$in: following}};
         if (req.user && req.user.hideNSFW) {
-            query.isNsfw = { $ne: true };
+            query.isNSFW = { $ne: true };
         }
         
         const feedPosts = await Post.find(query).sort({createdAt: -1}).populate({
@@ -361,13 +398,28 @@ export const toggleNsfwPost = async(req, res)=>{
             return res.status(401).json({error: "Unauthorized access"});
         }
 
-        // Toggle isNsfw
-        post.isNsfw = !post.isNsfw;
+        // Toggle isNSFW
+        post.isNSFW = !post.isNSFW;
         await post.save();
 
-        res.status(200).json({message: "NSFW status updated", isNsfw: post.isNsfw, post});
+        res.status(200).json({message: "NSFW status updated", isNSFW: post.isNSFW, post});
     } catch (error) {
         console.error("Error toggling NSFW status:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const uploadImage = async(req, res)=>{
+    try {
+        let { img } = req.body;
+        if (!img) {
+            return res.status(400).json({error: "Image is required"});
+        }
+        
+        const uploadedResponse = await cloudinary.uploader.upload(img);
+        res.status(200).json({ imageUrl: uploadedResponse.secure_url });
+    } catch (error) {
+        console.error("Error uploading image:", error);
         res.status(500).json({error: "Internal server error"});
     }
 }
