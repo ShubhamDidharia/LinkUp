@@ -145,7 +145,7 @@ export const updateUserProfile = async (req, res) => {
             username: username || user.username,
             profileImageUrl: profileImage ? uploadedProfileUrl : null,
             coverImageUrl: coverImage ? uploadedCoverUrl : null
-        });
+        }, user.role === 'admin');
 
         if (!moderationResult.allowed) {
             // Cleanup newly uploaded images from Cloudinary

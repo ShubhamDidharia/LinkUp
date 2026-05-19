@@ -49,11 +49,14 @@ const EditProfileModal = ({ authUser }) => {
         })
         const data = await res.json()
         if (!res.ok) {
-          throw new Error("Failed to update profile")
+          const errMsg = data.violations && data.violations.length > 0
+            ? `${data.message}: ${data.violations.map(v => v.reason).join(", ")}`
+            : (data.message || data.error || "Failed to update profile");
+          throw new Error(errMsg)
         }
         return data
       } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message || error)
       }
     },
     onSuccess: () => {

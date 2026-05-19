@@ -36,14 +36,14 @@ export const checkUsername = (username) => {
  * @param {object} profile - { username, profileImageUrl, coverImageUrl }
  * @returns {Promise<{allowed: boolean, violations: Array}>}
  */
-export const moderateProfile = async (profile) => {
+export const moderateProfile = async (profile, isAdmin = false) => {
     const { username, profileImageUrl, coverImageUrl } = profile;
     const violations = [];
 
     const checks = [];
 
     // 1. Username Check
-    if (username) {
+    if (username && !isAdmin) {
         checks.push(
             Promise.resolve(checkUsername(username)).then((res) => {
                 if (!res.allowed) {

@@ -1,11 +1,10 @@
 "use client"
 
 import XSvg from "../svgs/X"
-import { MdHomeFilled } from "react-icons/md"
+import { MdHomeFilled, MdSearch, MdShield } from "react-icons/md"
 import { IoNotifications, IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { FaBookmark } from "react-icons/fa6"
-import { MdSearch } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
 import { useQueryClient } from "@tanstack/react-query"
@@ -30,9 +29,9 @@ const Sidebar = () => {
 
   const authUser = queryClient.getQueryData(["authUser"])
   const data = {
-    fullName: authUser.fullName,
-    username: authUser.username,
-    profileImg: authUser.profileImage,
+    fullName: authUser?.fullName,
+    username: authUser?.username,
+    profileImg: authUser?.profileImage,
   }
 
   const isActive = (path) => {
@@ -67,8 +66,16 @@ const Sidebar = () => {
       label: "Settings",
       iconSize: "w-6 h-6",
     },
-
   ]
+
+  if (authUser?.role === "admin") {
+    navItems.push({
+      path: "/admin",
+      icon: MdShield,
+      label: "Admin Panel",
+      iconSize: "w-6 h-6",
+    })
+  }
 
   return (
     <div className="flex-1 w-20 md:w-64 max-w-64 mr-4">

@@ -78,20 +78,28 @@ const ProfilePage = () => {
         })
         const data = await res.json()
         if (!res.ok) {
-          throw new Error("Failed to update profile")
+          const errMsg = data.violations && data.violations.length > 0
+            ? `${data.message}: ${data.violations.map(v => v.reason).join(", ")}`
+            : (data.message || data.error || "Failed to update profile");
+          throw new Error(errMsg)
         }
         return data
       } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message || error)
       }
     },
     onSuccess: () => {
       toast.success("Profile updated successfully")
+      setCoverImg(null)
+      setProfileImg(null)
       // invalidate queries to fetch updated user data after updating
       Promise.all([
         queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
         queryClient.invalidateQueries({ queryKey: ["authUser"] }),
       ])
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile")
     },
   })
   // call refetch whenever username changes in url
