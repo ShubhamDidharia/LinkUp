@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import SignUpPage from './pages/auth/signup/SignUpPage';
 import LoginPage from './pages/auth/login/LoginPage.jsx';
 import HomePage from './pages/home/HomePage';
+import LandingPage from './pages/landing/LandingPage';
 import Sidebar from './components/common/Sidebar';
 import RightPanel from './components/common/RightPanel.jsx';
 import NotificationPage from './pages/notification/NotificationPage..jsx';
 import ProfilePage from './pages/profile/ProfilePage';
 import BookmarkedPostsPage from './pages/bookmarks/BookmarkedPostsPage';
 import SearchUsersPage from './pages/search/SearchUsersPage';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import { useThemeStore } from './stores/useThemeStore';
@@ -17,6 +18,8 @@ import { useThemeStore } from './stores/useThemeStore';
 
 function App() {
   const { theme } = useThemeStore();
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/' && !localStorage.getItem('theme-storage');
 
   // Initialize theme on mount
   useEffect(() => {
@@ -79,6 +82,23 @@ function App() {
     </div>
   )
  }
+
+  // Landing page with full width
+  if (!authUser && location.pathname === '/') {
+    return (
+      <>
+        <Routes>
+          <Route path='/' element={<LandingPage/>} />
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/signup' element={<SignUpPage/>}/>
+          <Route path='*' element={<Navigate to='/'/>} />
+        </Routes>
+        <Toaster/>
+      </>
+    )
+  }
+
+  // App layout with sidebar and right panel
   return (
     <>
       <div className='flex min-w-screen max-w-6xl mx-auto bg-white dark:bg-slate-900 transition-colors duration-200'>

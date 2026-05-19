@@ -6,7 +6,7 @@ import { MdOutlineAutoAwesome } from "react-icons/md"
 import { useRef, useState } from "react"
 import { IoCloseSharp } from "react-icons/io5"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 
 const CreatePost = () => {

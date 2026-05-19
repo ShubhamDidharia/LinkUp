@@ -6,7 +6,7 @@ import { IoSettingsOutline } from "react-icons/io5"
 import { FaUser, FaArrowLeft } from "react-icons/fa"
 import { FaHeart } from "react-icons/fa6"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 
 const NotificationPage = () => {
   // react query for notifications

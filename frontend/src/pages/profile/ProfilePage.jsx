@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query"
 import { formatMemberSinceDate } from "../../utils/date"
 import useFollow from "../../hooks/useFollow"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null)

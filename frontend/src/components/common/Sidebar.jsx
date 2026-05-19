@@ -9,7 +9,7 @@ import { MdSearch } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
 import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import ThemeSlider from "./ThemeSlider"
 
 const Sidebar = () => {

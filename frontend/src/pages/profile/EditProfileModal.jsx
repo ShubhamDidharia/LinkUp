@@ -1,14 +1,26 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
-import { useEffect } from "react"
-import { MdEdit, MdClose } from "react-icons/md"
+import { toast } from "sonner"
+import { MdEdit } from "react-icons/md"
 import { FaUser, FaEnvelope, FaLock, FaLink } from "react-icons/fa"
 import { BsTextareaResize } from "react-icons/bs"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 const EditProfileModal = ({ authUser }) => {
+  const [open, setOpen] = useState(false)
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -46,13 +58,14 @@ const EditProfileModal = ({ authUser }) => {
     },
     onSuccess: () => {
       toast.success("Profile updated successfully")
-      // invalidate queries to fetch updated user data after updating
       Promise.all([
         queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
         queryClient.invalidateQueries({ queryKey: ["authUser"] }),
       ])
-      // Close modal after successful update
-      document.getElementById("edit_profile_modal").close()
+      setOpen(false)
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile")
     },
   })
 
@@ -69,41 +82,29 @@ const EditProfileModal = ({ authUser }) => {
   }, [authUser])
 
   return (
-    <>
-      <button
-        className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
-        onClick={() => document.getElementById("edit_profile_modal").showModal()}
-      >
-        <MdEdit className="w-4 h-4" />
-        Edit profile
-      </button>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full shadow-sm hover:shadow-md flex items-center gap-2">
+          <MdEdit className="w-4 h-4" />
+          Edit profile
+        </Button>
+      </DialogTrigger>
 
-      <dialog id="edit_profile_modal" className="modal">
-        <div className="modal-box bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-2xl p-0 max-h-[90vh] overflow-y-auto">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-8 py-6 border-b border-slate-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">Edit Profile</h3>
-                <p className="text-slate-600 mt-1">Update your personal information</p>
-              </div>
-              <form method="dialog">
-                <button className="p-2 rounded-full hover:bg-white/50 transition-colors">
-                  <MdClose className="w-6 h-6 text-slate-500" />
-                </button>
-              </form>
-            </div>
-          </div>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="bg-gradient-to-r from-blue-50 to-purple-50 -mx-6 -mt-6 px-6 py-6 border-b border-slate-100">
+          <DialogTitle className="text-2xl font-bold text-slate-900">Edit Profile</DialogTitle>
+          <DialogDescription className="text-slate-600 mt-1">
+            Update your personal information
+          </DialogDescription>
+        </DialogHeader>
 
-          {/* Form Content */}
-          <div className="p-8 pb-6">
-            <form
-              className="space-y-6"
-              onSubmit={(e) => {
-                e.preventDefault()
-                updateProfile()
-              }}
-            >
+        <form
+          className="space-y-6 py-6"
+          onSubmit={(e) => {
+            e.preventDefault()
+            updateProfile()
+          }}
+        >
               {/* Personal Information Section */}
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
@@ -114,85 +115,90 @@ const EditProfileModal = ({ authUser }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="Enter your full name"
-                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
-                        value={formData.fullName}
-                        name="fullName"
-                        onChange={handleInputChange}
-                      />
-                    </div>
+                    <Label htmlFor="fullName" className="text-sm font-medium text-slate-700 mb-2">
+                      Full Name
+                    </Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      name="fullName"
+                      onChange={handleInputChange}
+                      className="rounded-xl"
+                    />
                   </div>
 
                   {/* Username */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Username</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="Enter your username"
-                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
-                        value={formData.username}
-                        name="username"
-                        onChange={handleInputChange}
-                      />
-                    </div>
+                    <Label htmlFor="username" className="text-sm font-medium text-slate-700 mb-2">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="Enter your username"
+                      value={formData.username}
+                      name="username"
+                      onChange={handleInputChange}
+                      className="rounded-xl"
+                    />
                   </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 mb-2">
+                    Email
+                  </Label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <FaEnvelope className="h-4 w-4 text-slate-400" />
-                    </div>
-                    <input
+                    <FaEnvelope className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <Input
+                      id="email"
                       type="email"
                       placeholder="Enter your email"
-                      className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
                       value={formData.email}
                       name="email"
                       onChange={handleInputChange}
+                      className="pl-10 rounded-xl"
                     />
                   </div>
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Bio</label>
+                  <Label htmlFor="bio" className="text-sm font-medium text-slate-700 mb-2">
+                    Bio
+                  </Label>
                   <div className="relative">
-                    <div className="absolute top-3 left-4 pointer-events-none">
-                      <BsTextareaResize className="h-4 w-4 text-slate-400" />
-                    </div>
-                    <textarea
+                    <BsTextareaResize className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <Textarea
+                      id="bio"
                       placeholder="Tell us about yourself..."
-                      className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500 resize-none"
                       value={formData.bio}
                       name="bio"
                       onChange={handleInputChange}
                       rows={3}
+                      className="pl-10 rounded-xl resize-none"
                     />
                   </div>
                 </div>
 
                 {/* Link */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Website</label>
+                  <Label htmlFor="link" className="text-sm font-medium text-slate-700 mb-2">
+                    Website
+                  </Label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <FaLink className="h-4 w-4 text-slate-400" />
-                    </div>
-                    <input
+                    <FaLink className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <Input
+                      id="link"
                       type="url"
                       placeholder="https://your-website.com"
-                      className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
                       value={formData.link}
                       name="link"
                       onChange={handleInputChange}
+                      className="pl-10 rounded-xl"
                     />
                   </div>
                 </div>
@@ -208,36 +214,38 @@ const EditProfileModal = ({ authUser }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Current Password */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Current Password</label>
+                    <Label htmlFor="currentPassword" className="text-sm font-medium text-slate-700 mb-2">
+                      Current Password
+                    </Label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <FaLock className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <input
+                      <FaLock className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                      <Input
+                        id="currentPassword"
                         type="password"
                         placeholder="Enter current password"
-                        className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
                         value={formData.currentPassword}
                         name="currentPassword"
                         onChange={handleInputChange}
+                        className="pl-10 rounded-xl"
                       />
                     </div>
                   </div>
 
                   {/* New Password */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">New Password</label>
+                    <Label htmlFor="newPassword" className="text-sm font-medium text-slate-700 mb-2">
+                      New Password
+                    </Label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <FaLock className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <input
+                      <FaLock className="absolute left-3 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+                      <Input
+                        id="newPassword"
                         type="password"
                         placeholder="Enter new password"
-                        className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-500"
                         value={formData.newPassword}
                         name="newPassword"
                         onChange={handleInputChange}
+                        className="pl-10 rounded-xl"
                       />
                     </div>
                   </div>
@@ -251,19 +259,19 @@ const EditProfileModal = ({ authUser }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-6 border-t border-slate-200 sticky bottom-0 bg-white">
-                <form method="dialog" className="flex-1">
-                  <button
-                    type="button"
-                    className="w-full py-3 px-4 border-2 border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                </form>
-                <button
+              <div className="flex gap-4 pt-6 border-t border-slate-200">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 py-3 px-4 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button
                   type="submit"
                   disabled={isUpdatingProfile}
-                  className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
                 >
                   {isUpdatingProfile ? (
                     <>
@@ -276,18 +284,12 @@ const EditProfileModal = ({ authUser }) => {
                       Update Profile
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
-
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
-    </>
-  )
+          </DialogContent>
+        </Dialog>
+      )
 }
 
 export default EditProfileModal
