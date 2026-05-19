@@ -12,6 +12,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner"
 const CreatePost = () => {
   const [text, setText] = useState("")
   const [img, setImg] = useState(null)
+  const [isNsfw, setIsNsfw] = useState(false)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showAIGenerator, setShowAIGenerator] = useState(false)
   const [aiDescription, setAiDescription] = useState("")
@@ -202,14 +203,14 @@ const CreatePost = () => {
     isError,
     error,
   } = useMutation({
-    mutationFn: async ({ text, img }) => {
+    mutationFn: async ({ text, img, isNsfw }) => {
       try {
         const res = await fetch("/api/posts/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ text, img }),
+          body: JSON.stringify({ text, img, isNsfw }),
         })
         const data = await res.json()
         if (!res.ok) {
@@ -233,9 +234,10 @@ const CreatePost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    createPost({ text, img })
+    createPost({ text, img, isNsfw })
     setText("")
     setImg(null)
+    setIsNsfw(false)
   }
 
   const handleImgChange = (e) => {
@@ -433,6 +435,17 @@ const CreatePost = () => {
                     </div>
                   )}
                 </div>
+
+                {/* NSFW Checkbox */}
+                <label className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={isNsfw}
+                    onChange={(e) => setIsNsfw(e.target.checked)}
+                    className="w-4 h-4 text-red-500 rounded cursor-pointer"
+                  />
+                  <span className="text-sm font-medium text-red-500 dark:text-red-400">NSFW</span>
+                </label>
               </div>
 
               <button

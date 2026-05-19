@@ -18,6 +18,7 @@ const Post = ({ post }) => {
   const [editText, setEditText] = useState(post.text)
   const [editImg, setEditImg] = useState(post.img)
   const [editMode, setEditMode] = useState(false)
+  const [showNsfw, setShowNsfw] = useState(false)
   const postOwner = post.user
 
   // react query for post deletion
@@ -108,6 +109,37 @@ const Post = ({ post }) => {
       } else {
         toast.success("Bookmark removed")
       }
+    },
+  })
+
+  const { mutate: toggleNsfw, isPending: isTogglingNsfw } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch(`/api/posts/nsfw/${post._id}`, {
+          method: "POST",
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          throw new Error("Failed to toggle NSFW status")
+        }
+        return data
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    onSuccess: (data) => {
+      toast.success(`Post marked as ${data.isNsfw ? "NSFW" : "Safe"}`)
+      queryClient.setQueryData(["posts"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, isNsfw: data.isNsfw }
+          }
+          return p
+        })
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 
@@ -251,6 +283,19 @@ const Post = ({ post }) => {
 
             {isMyPost && (
               <div className="ml-auto flex gap-2">
+                {!isTogglingNsfw && (
+                  <button
+                    onClick={() => toggleNsfw()}
+                    className={`p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 ${
+                      post.isNsfw
+                        ? "text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
+                        : "text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
+                    }`}
+                    title={post.isNsfw ? "Mark as Safe" : "Mark as NSFW"}
+                  >
+                    <span className="text-xs font-bold">NSFW</span>
+                  </button>
+                )}
                 {!isUpdating && (
                   <button
                     onClick={() => setEditMode(!editMode)}
@@ -311,14 +356,64 @@ const Post = ({ post }) => {
             </div>
           ) : (
             <>
-              {/* Post Text */}
-              {post.text && <p className="text-slate-800 dark:text-slate-100 leading-relaxed mb-4">{post.text}</p>}
-
-              {/* Post Image */}
-              {post.img && (
-                <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                  <img src={post.img} className="w-full h-auto object-cover" alt="Post content" />
+              {/* NSFW Warning and View Button */}
+              {post.isNsfw && !showNsfw && (
+                <div className="mb-4 p-6 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-red-200 dark:bg-red-900/40 rounded-full mb-3">
+                    <span className="text-xl">⚠️</span>
+                  </div>
+                  <p className="text-red-900 dark:text-red-200 font-semibold mb-3">This post contains NSFW content</p>
+                  <p className="text-red-800 dark:text-red-300 text-sm mb-4">This content may not be suitable for all audiences</p>
+                  <button
+                    onClick={() => setShowNsfw(true)}
+                    className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full font-medium transition-colors"
+                  >
+                    View NSFW Post
+                  </button>
                 </div>
+              )}
+
+              {/* Post Content - Blurred if NSFW and not viewing */}
+              {post.isNsfw && !showNsfw ? (
+                <>
+                  {/* Blurred Post Text */}
+                  {post.text && (
+                    <p className="text-slate-800 dark:text-slate-100 leading-relaxed mb-4 blur-md opacity-60 select-none">
+                      {post.text}
+                    </p>
+                  )}
+
+                  {/* Blurred Post Image */}
+                  {post.img && (
+                    <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                      <img src={post.img} className="w-full h-auto object-cover blur-md opacity-40" alt="Post content" />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Post Text */}
+                  {post.text && <p className="text-slate-800 dark:text-slate-100 leading-relaxed mb-4">{post.text}</p>}
+
+                  {/* Post Image */}
+                  {post.img && (
+                    <div className="mb-4 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                      <img src={post.img} className="w-full h-auto object-cover" alt="Post content" />
+                    </div>
+                  )}
+
+                  {/* Hide Button for NSFW */}
+                  {post.isNsfw && showNsfw && (
+                    <div className="mt-4 text-center">
+                      <button
+                        onClick={() => setShowNsfw(false)}
+                        className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full text-sm font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                      >
+                        Hide NSFW Content
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}

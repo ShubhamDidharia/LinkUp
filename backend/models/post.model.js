@@ -28,7 +28,11 @@ const postSchema = new mongoose.Schema({
             required: true
            }
         }
-    ]
+    ],
+    isNsfw: {
+        type: Boolean,
+        default: false
+    }
 
 },{timestamps:true})
 

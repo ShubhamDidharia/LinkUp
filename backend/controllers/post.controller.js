@@ -37,7 +37,7 @@ export const getAllPosts = async(req, res) =>{
 
 export const createPost = async(req, res)=>{
     try {
-        const {text} = req.body
+        const {text, isNsfw} = req.body
         let {img} = req.body
         const userId = req.user._id // protectedRoute middleware
         
@@ -55,7 +55,7 @@ export const createPost = async(req, res)=>{
             img = uploadedResponse.secure_url;
         }
 
-        const newPost = new Post({user : userId, text ,img})
+        const newPost = new Post({user : userId, text, img, isNsfw: isNsfw || false})
 
         await newPost.save();
         res.status(201).json(newPost)
@@ -332,6 +332,32 @@ export const getBookmarkedPosts = async(req,res)=>{
         res.status(200).json(posts);
     } catch (error) {
         console.error("Error fetching bookmarked posts:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const toggleNsfwPost = async(req, res)=>{
+    try {
+        const {id: postId} = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({error: "Post not found"});
+        }
+
+        // Check if user is post owner
+        if(post.user.toString() !== userId.toString()){
+            return res.status(401).json({error: "Unauthorized access"});
+        }
+
+        // Toggle isNsfw
+        post.isNsfw = !post.isNsfw;
+        await post.save();
+
+        res.status(200).json({message: "NSFW status updated", isNsfw: post.isNsfw, post});
+    } catch (error) {
+        console.error("Error toggling NSFW status:", error);
         res.status(500).json({error: "Internal server error"});
     }
 }
