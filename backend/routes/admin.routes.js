@@ -9,7 +9,8 @@ import {
     getAuditLogs,
     getRateLimitViolations,
     deleteRateLimitViolation,
-    analyzeRateLimitViolationAI
+    analyzeRateLimitViolationAI,
+    getUsersAtRisk
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
@@ -28,5 +29,8 @@ router.get("/activity", getAuditLogs);
 router.get("/rate-limit-violations", getRateLimitViolations);
 router.delete("/rate-limit-violations/:id", deleteRateLimitViolation);
 router.post("/rate-limit-violations/:id/ai-analyze", analyzeRateLimitViolationAI);
+
+// At-risk users list
+router.get("/users-at-risk", getUsersAtRisk);
 
 export default router;

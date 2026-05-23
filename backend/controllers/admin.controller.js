@@ -6,6 +6,24 @@ import SystemSetting, { getSetting } from "../models/SystemSetting.js";
 import RateLimitViolation from "../models/RateLimitViolation.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// GET /api/admin/users-at-risk
+export const getUsersAtRisk = async (req, res) => {
+    try {
+        const suspended = await User.find({ status: "suspended" })
+            .select("username fullName profileImage email strikes autoFlaggedPosts createdAt status role")
+            .sort({ updatedAt: -1 });
+
+        const underReview = await User.find({ status: "under_review" })
+            .select("username fullName profileImage email strikes autoFlaggedPosts createdAt status role")
+            .sort({ updatedAt: -1 });
+
+        res.status(200).json({ suspended, underReview });
+    } catch (error) {
+        console.error("Error in getUsersAtRisk:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 // GET /api/admin/stats
 export const getAdminStats = async (req, res) => {
     try {

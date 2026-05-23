@@ -22,6 +22,7 @@ import {
     FaShieldVirus
 } from "react-icons/fa";
 import SecurityAlerts from "../../pages/admin/SecurityAlerts";
+import UsersAtRisk from "../../pages/admin/UsersAtRisk";
 import { toast } from "sonner";
 import ReportsQueue from "../../pages/admin/ReportsQueue";
 import ReportDetail from "../../pages/admin/ReportDetail";
@@ -249,18 +250,20 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        {/* Accounts Suspended Card */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
-                            <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <FaUsers className="text-indigo-400 text-sm" />
-                                Users Overview
-                            </h2>
-                            <p className="text-5xl font-black mt-3 text-white tracking-tight">{stats?.users?.total || 0}</p>
-                            <div className="mt-4 text-xs text-slate-500 flex gap-3">
-                                <span className="text-rose-400">Suspended: {stats?.users?.suspended || 0}</span>
-                                <span className="text-amber-400">Review: {stats?.users?.underReview || 0}</span>
+                        {/* Accounts Suspended Card (clickable -> Users At Risk) */}
+                        <Link to="/admin/users-at-risk" className="block">
+                            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200 hover:border-indigo-600/30">
+                                <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <FaUsers className="text-indigo-400 text-sm" />
+                                    Users Overview
+                                </h2>
+                                <p className="text-5xl font-black mt-3 text-white tracking-tight">{stats?.users?.total || 0}</p>
+                                <div className="mt-4 text-xs text-slate-500 flex gap-3">
+                                    <span className="text-rose-400">Suspended: {stats?.users?.suspended || 0}</span>
+                                    <span className="text-amber-400">Review: {stats?.users?.underReview || 0}</span>
+                                </div>
                             </div>
-                        </div>
+                        </Link>
 
                         {/* Content Moderation Flagged Card */}
                         <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
@@ -811,6 +814,7 @@ const AdminLayout = () => {
                     <Route path="/reports" element={<ReportsQueue />} />
                     <Route path="/reports/:reportId" element={<ReportDetail />} />
                     <Route path="/users" element={<UserLookup />} />
+                    <Route path="/users-at-risk" element={<UsersAtRisk />} />
                     <Route path="/security" element={<SecurityAlerts />} />
                     <Route path="*" element={<Navigate to="/admin" />} />
                 </Routes>
