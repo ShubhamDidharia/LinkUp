@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
 		const { fullName, username, email, password } = req.body;
 
 		// Moderate username
-		const usernameResult = checkUsername(username);
+		const usernameResult = await checkUsername(username);
 		if (!usernameResult.allowed) {
 			return res.status(400).json({ message: 'Username not allowed' });
 		}

@@ -19,6 +19,7 @@ import postRoutes from "./routes/post.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import reportRoutes from "./routes/report.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 import connectDB from "./db/connectMongo.js";
 
@@ -82,6 +83,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 httpServer.listen(PORT, () => {
