@@ -6,7 +6,10 @@ import {
     getSystemHealth,
     getSystemSettings,
     updateSystemSettings,
-    getAuditLogs
+    getAuditLogs,
+    getRateLimitViolations,
+    deleteRateLimitViolation,
+    analyzeRateLimitViolationAI
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
@@ -20,5 +23,10 @@ router.get("/health", getSystemHealth);
 router.get("/settings", getSystemSettings);
 router.post("/settings", updateSystemSettings);
 router.get("/activity", getAuditLogs);
+
+// Rate-limit violation monitoring routes
+router.get("/rate-limit-violations", getRateLimitViolations);
+router.delete("/rate-limit-violations/:id", deleteRateLimitViolation);
+router.post("/rate-limit-violations/:id/ai-analyze", analyzeRateLimitViolationAI);
 
 export default router;

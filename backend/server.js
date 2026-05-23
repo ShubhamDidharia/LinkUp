@@ -20,6 +20,7 @@ import notificationRoutes from "./routes/notification.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import reportRoutes from "./routes/report.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import { generalLimiter, authLimiter, spamLimiter, reportsLimiter } from "./middlewares/rateLimiter.js";
 
 import connectDB from "./db/connectMongo.js";
 
@@ -76,6 +77,14 @@ app.use(express.json({ limit: "5mb" })); // to parse req.body
 app.use(express.urlencoded({ extended: true })); // to parse form data(urlencoded)
 
 app.use(cookieParser());
+
+// Rate limiters — order matters: specific ones before generalLimiter on their routes
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/signup", authLimiter);
+app.use("/api/reports", reportsLimiter);
+
+// General limiter covers all other API traffic
+app.use("/api/", generalLimiter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);

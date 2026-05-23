@@ -3,6 +3,8 @@ import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 import Report from "../models/Report.js";
 import SystemSetting, { getSetting } from "../models/SystemSetting.js";
+import RateLimitViolation from "../models/RateLimitViolation.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // GET /api/admin/stats
 export const getAdminStats = async (req, res) => {
@@ -165,6 +167,130 @@ export const getAuditLogs = async (req, res) => {
         res.status(200).json(logs);
     } catch (error) {
         console.error("Error in getAuditLogs:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+// GET /api/admin/rate-limit-violations
+export const getRateLimitViolations = async (req, res) => {
+    try {
+        const violations = await RateLimitViolation.find()
+            .sort({ createdAt: -1 })
+            .limit(50)
+            .populate("user", "username profileImage email status strikes role");
+        res.status(200).json(violations);
+    } catch (error) {
+        console.error("Error in getRateLimitViolations:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+// DELETE /api/admin/rate-limit-violations/:id
+export const deleteRateLimitViolation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await RateLimitViolation.findByIdAndDelete(id);
+        res.status(200).json({ message: "Violation alert dismissed" });
+    } catch (error) {
+        console.error("Error in deleteRateLimitViolation:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+// POST /api/admin/rate-limit-violations/:id/ai-analyze
+export const analyzeRateLimitViolationAI = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const violation = await RateLimitViolation.findById(id)
+            .populate("user", "username email status strikes role createdAt autoFlaggedPosts");
+
+        if (!violation) {
+            return res.status(404).json({ error: "Violation record not found" });
+        }
+
+        // Gather supporting signals for AI analysis
+        const sameIpHistory = await RateLimitViolation.find({ ip: violation.ip }).sort({ createdAt: -1 });
+        const totalViolationsFromIp = sameIpHistory.length;
+        const endpointsHit = [...new Set(sameIpHistory.map(v => v.endpoint))];
+        const firstSeenAt = sameIpHistory[sameIpHistory.length - 1]?.createdAt;
+
+        let userContext = null;
+        if (violation.user) {
+            const u = violation.user;
+            const postCount = await Post.countDocuments({ user: u._id });
+            const reportCount = await Report.countDocuments({ reportedUser: u._id });
+            userContext = {
+                username: u.username,
+                email: u.email,
+                accountStatus: u.status,
+                role: u.role,
+                strikes: u.strikes,
+                autoFlaggedPosts: u.autoFlaggedPosts,
+                accountCreatedAt: u.createdAt,
+                totalPosts: postCount,
+                totalReportsAgainstUser: reportCount,
+            };
+        }
+
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            return res.status(500).json({ error: "Gemini AI API key not configured" });
+        }
+
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+
+        const prompt = `You are a security analyst for a social media platform. Analyze this rate-limit violation incident and determine whether it is a BOT/automated attacker or an AUTHENTIC HUMAN user.
+
+INCIDENT DETAILS:
+- IP Address: ${violation.ip}
+- Endpoint targeted: ${violation.endpoint}
+- Attempted username/email: ${violation.attemptedUsername || "N/A"}
+- Violation count in this session: ${violation.violationCount}
+- First occurrence: ${violation.createdAt}
+
+HISTORICAL IP BEHAVIOR:
+- Total violations from this IP: ${totalViolationsFromIp}
+- Unique endpoints hit from this IP: ${endpointsHit.join(", ")}
+- First ever seen: ${firstSeenAt || "N/A"}
+
+${userContext ? `LINKED USER ACCOUNT:
+- Username: ${userContext.username}
+- Account status: ${userContext.accountStatus}
+- Strikes: ${userContext.strikes}
+- Auto-flagged posts: ${userContext.autoFlaggedPosts}
+- Account age: created ${userContext.accountCreatedAt}
+- Total posts: ${userContext.totalPosts}
+- Total reports against user: ${userContext.totalReportsAgainstUser}` : "NO LINKED USER ACCOUNT (anonymous/unauthenticated attacker)"}
+
+Please provide a concise analysis with EXACTLY this structure:
+1. VERDICT: [BOT | SUSPICIOUS | AUTHENTIC]
+2. CONFIDENCE: [Low | Medium | High]
+3. KEY SIGNALS: (bullet list of 3-5 observed patterns that led to this verdict)
+4. RECOMMENDATION: (one clear action: Monitor / Warn / Suspend / Block IP / No action needed)`;
+
+        let aiAnalysis = "";
+        let success = false;
+
+        for (const modelName of models) {
+            try {
+                const model = genAI.getGenerativeModel({ model: modelName });
+                const result = await model.generateContent(prompt);
+                aiAnalysis = result.response.text().trim();
+                success = true;
+                break;
+            } catch (err) {
+                console.error(`[AI Rate Limit Analysis] Failed with model ${modelName}:`, err.message);
+            }
+        }
+
+        if (!success) {
+            return res.status(500).json({ error: "Failed to generate AI analysis. Gemini models unavailable." });
+        }
+
+        res.status(200).json({ aiAnalysis, violationId: id });
+    } catch (error) {
+        console.error("Error in analyzeRateLimitViolationAI:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };

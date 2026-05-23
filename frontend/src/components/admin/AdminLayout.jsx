@@ -18,8 +18,10 @@ import {
     FaFileAlt,
     FaUserShield,
     FaExclamationCircle,
-    FaCheckCircle
+    FaCheckCircle,
+    FaShieldVirus
 } from "react-icons/fa";
+import SecurityAlerts from "../../pages/admin/SecurityAlerts";
 import { toast } from "sonner";
 import ReportsQueue from "../../pages/admin/ReportsQueue";
 import ReportDetail from "../../pages/admin/ReportDetail";
@@ -774,6 +776,10 @@ const AdminLayout = () => {
                             <FaUsers className="text-lg" />
                             <span>User Lookup</span>
                         </Link>
+                        <Link to="/admin/security" className={linkClass("/admin/security")}>
+                            <FaShieldVirus className="text-lg" />
+                            <span>Security Alerts</span>
+                        </Link>
                     </nav>
                 </div>
 
@@ -805,6 +811,7 @@ const AdminLayout = () => {
                     <Route path="/reports" element={<ReportsQueue />} />
                     <Route path="/reports/:reportId" element={<ReportDetail />} />
                     <Route path="/users" element={<UserLookup />} />
+                    <Route path="/security" element={<SecurityAlerts />} />
                     <Route path="*" element={<Navigate to="/admin" />} />
                 </Routes>
             </main>
