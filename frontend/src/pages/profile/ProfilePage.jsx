@@ -5,11 +5,12 @@ import { Link } from "react-router-dom"
 import Posts from "../../components/common/Posts"
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton"
 import EditProfileModal from "./EditProfileModal"
+import NotificationBell from "../../components/common/NotificationBell"
 import { POSTS } from "../../utils/db/dummy"
 import { useParams } from "react-router-dom"
 import { useEffect } from "react"
 import { FaArrowLeft, FaCamera, FaUserPlus, FaUserMinus, FaFlag } from "react-icons/fa"
-import { IoCalendarOutline, IoNotifications, IoSettingsOutline } from "react-icons/io5"
+import { IoCalendarOutline, IoSettingsOutline } from "react-icons/io5"
 import { FaLink } from "react-icons/fa"
 import { MdEdit, MdVerified } from "react-icons/md"
 import { useQuery } from "@tanstack/react-query"
@@ -153,19 +154,11 @@ const ProfilePage = () => {
                     <h1 className="font-bold text-xl text-slate-900 dark:text-slate-100">{user?.fullName}</h1>
                     <MdVerified className="w-5 h-5 text-blue-500" />
                   </div>
-                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">{POSTS?.length} posts</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">{user?.posts?.length || 0} posts</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {/* Notification Bell Icon */}
-                  <Link
-                    to="/notifications"
-                    className="relative p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 group"
-                    title="Notifications"
-                  >
-                    <IoNotifications className="w-6 h-6 text-slate-500 dark:text-slate-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
-                    {/* Notification indicator dot (show conditionally) */}
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                  </Link>
+                  {/* Notification Bell with Unread Count Badge */}
+                  <NotificationBell />
                   {/* Settings Icon */}
                   <Link
                     to="/settings"

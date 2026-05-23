@@ -75,7 +75,7 @@ export default {
       {
         black: {
           ...daisyUIThemes["black"],
-          primary: "rgb(29, 155, 240)",
+          primary: "rgb(239, 68, 68)",
           secondary: "rgb(24, 24, 24)",
           // Override background colors to remove black
           "base-100": "#ffffff", // Main background - white

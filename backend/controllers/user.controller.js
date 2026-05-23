@@ -1,8 +1,10 @@
 import User from '../models/user.model.js';
+import Post from '../models/post.model.js';
 import Notification from '../models/notification.model.js';
 import bcrypt from 'bcryptjs';
 import {v2 as cloudinary}  from 'cloudinary';
 import { moderateProfile } from '../utils/profileModerator.js';
+import { createAndEmitNotification } from '../lib/notificationHelper.js';
 
 export const getUserProfile  = async(req,res)=>{
 
@@ -12,7 +14,15 @@ export const getUserProfile  = async(req,res)=>{
         if(!user){
             return res.status(404).json({error: "User not found"});
         }
-        res.status(200).json(user);
+        
+        // Count all posts by this user (including NSFW)
+        const postCount = await Post.countDocuments({user: user._id});
+        
+        // Convert user to object and add postCount
+        const userWithPostCount = user.toObject();
+        userWithPostCount.posts = { length: postCount };
+        
+        res.status(200).json(userWithPostCount);
     }catch( err) {
         console.error("Error fetching user profile:", err);
         res.status(500).json({error: "Internal server error"});
@@ -48,14 +58,19 @@ export const followUnfollowUser = async(req,res)=>{
             await User.findByIdAndUpdate(id, {$push :{followers:currentUser._id}});
             await User.findByIdAndUpdate(req.user._id, {$push: {following: userToModify._id}}); 
 
-            //before status 200, send notification
-            const newNotification = new Notification( {
-                from: currentUser._id,
-                to: userToModify._id,
-                type: "follow",
-                read: false
-            })
-            await newNotification.save(); // Create a new notification
+            //send follow notification with socket.io
+            try {
+                await createAndEmitNotification({
+                    from: currentUser._id,
+                    to: userToModify._id,
+                    type: "follow",
+                    message: "Someone followed you",
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending follow notification:", error);
+            }
 
             res.status(200).json({message: "Followed successfully"}); 
 

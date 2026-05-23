@@ -1,8 +1,10 @@
+import mongoose from 'mongoose';
 import User from '../models/user.model.js';
 import Post from '../models/post.model.js';
 import {v2 as cloudinary} from 'cloudinary';
 import Notification from '../models/notification.model.js';
 import { moderatePost } from '../utils/moderatePost.js';
+import { createAndEmitNotification } from '../lib/notificationHelper.js';
 
 export const getAllPosts = async(req, res) =>{
     try {
@@ -84,6 +86,23 @@ export const createPost = async(req, res)=>{
                 flagReasons: moderationResult.reasons
             });
             await newPost.save();
+
+            // Send auto-moderation notification
+            try {
+                await createAndEmitNotification({
+                    from: new mongoose.Types.ObjectId("000000000000000000000001"), // System user
+                    to: userId,
+                    type: "auto_moderated_nsfw",
+                    relatedPostId: newPost._id,
+                    message: "Your post was automatically flagged as NSFW for containing sensitive content.",
+                    reason: moderationResult.reasons?.join(", ") || "Sensitive content detected",
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending auto-moderation notification:", error);
+            }
+
             return res.status(200).json({
                 posted: true,
                 autoFlagged: true,
@@ -156,6 +175,24 @@ export const addComment  = async(req,res)=>{
 
         post.comments.push({text, user: userId});
         await post.save();
+
+        // Send notification to post owner if commenting user is not the owner
+        if (post.user.toString() !== userId.toString()) {
+            try {
+                await createAndEmitNotification({
+                    from: userId,
+                    to: post.user,
+                    type: "comment",
+                    relatedPostId: postId,
+                    message: "Someone commented on your post",
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending comment notification:", error);
+            }
+        }
+
         res.status(200).json(post);
         
     } catch (error) {
@@ -197,16 +234,23 @@ export const likeUnlikePost = async(req,res)=>{
             const updatedLikes  = post.likes;
             res.status(200).json( updatedLikes);
 
-            //send like notification
-            const newNotification = new Notification( {
-                from: userId,
-                to: post.user,
-                type: "like"
-            })
-            await newNotification.save();
-            res.status(200).json({message: "Post liked successfully"});
+            // Send like notification to post owner if liker is not the owner
+            if (post.user.toString() !== userId.toString()) {
+                try {
+                    await createAndEmitNotification({
+                        from: userId,
+                        to: post.user,
+                        type: "like",
+                        relatedPostId: postId,
+                        message: "Someone liked your post",
+                        io: req.io,
+                        onlineUsers: req.onlineUsers
+                    });
+                } catch (error) {
+                    console.error("Error sending like notification:", error);
+                }
+            }
         }
-
 
         
     } catch (error) {

@@ -1,8 +1,11 @@
+import mongoose from 'mongoose';
 import Report from "../models/Report.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
+import Notification from "../models/notification.model.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { v2 as cloudinary } from "cloudinary";
+import { createAndEmitNotification } from "../lib/notificationHelper.js";
 
 /**
  * --- USER FACING CONTROLLERS ---
@@ -54,6 +57,22 @@ export const submitReport = async (req, res) => {
         });
 
         await report.save();
+
+        // Send notification to reported user that they were reported (without revealing who reported them)
+        try {
+            await createAndEmitNotification({
+                from: new mongoose.Types.ObjectId("000000000000000000000001"), // System user
+                to: reportedUser,
+                type: "reported",
+                message: `Your ${reportType} was reported by another user for: ${reason}`,
+                reason: reason,
+                io: req.io,
+                onlineUsers: req.onlineUsers
+            });
+        } catch (error) {
+            console.error("Error sending report notification:", error);
+        }
+
         res.status(201).json({ message: "Report submitted successfully" });
     } catch (error) {
         console.error("Error in submitReport:", error);
@@ -223,9 +242,40 @@ export const resolveReport = async (req, res) => {
             } else if (user.strikes >= 3) {
                 user.status = "under_review";
             }
+
+            // Send warning notification to user
+            try {
+                await createAndEmitNotification({
+                    from: new mongoose.Types.ObjectId("000000000000000000000001"), // System user
+                    to: user._id,
+                    type: "admin_warning",
+                    action: "warn",
+                    strikesCount: user.strikes,
+                    message: `You received a warning from our moderation team. You now have ${user.strikes} strike(s). Reason: ${adminNote || "Violating community guidelines"}`,
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending warning notification:", error);
+            }
         } else if (action === "suspend") {
             report.status = "actioned";
             user.status = "suspended";
+
+            // Send suspension notification to user
+            try {
+                await createAndEmitNotification({
+                    from: new mongoose.Types.ObjectId("000000000000000000000001"), // System user
+                    to: user._id,
+                    type: "admin_suspend",
+                    action: "suspend",
+                    message: `Your account has been suspended due to repeated violations. Reason: ${adminNote || "Violating community guidelines"}`,
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending suspension notification:", error);
+            }
         } else if (action === "delete_content") {
             report.status = "actioned";
 
@@ -259,6 +309,21 @@ export const resolveReport = async (req, res) => {
             } else if (report.reportType === "username") {
                 const suffix = user._id.toString().slice(-6);
                 user.username = "user_" + suffix;
+            }
+
+            // Send content removal notification to user
+            try {
+                await createAndEmitNotification({
+                    from: new mongoose.Types.ObjectId("000000000000000000000001"), // System user
+                    to: user._id,
+                    type: "admin_content_removed",
+                    action: "delete_content",
+                    message: `Your ${report.reportType} was removed by our moderation team. Reason: ${adminNote || "Violating community guidelines"}`,
+                    io: req.io,
+                    onlineUsers: req.onlineUsers
+                });
+            } catch (error) {
+                console.error("Error sending content removal notification:", error);
             }
         }
 

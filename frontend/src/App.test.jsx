@@ -16,18 +16,14 @@ import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import { useThemeStore } from './stores/useThemeStore';
 import AdminLayout from './components/admin/AdminLayout';
-import { useSocket } from './hooks/useSocket';
 
-
-function App() {
+export default function App() {
   const { theme } = useThemeStore();
   const location = useLocation();
   const isLandingPage = location.pathname === '/' && !localStorage.getItem('theme-storage');
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   const {data : authUser, isLoading} = useQuery({
-    //we use aquery key to cache the data, so that we dont have to make a 
-    // request to the server every time we visit the page
     queryKey : ['authUser'],
     queryFn: async()=>{
       try {
@@ -47,8 +43,7 @@ function App() {
     },
   })
 
-  // Initialize Socket.IO connection for authenticated users
-  useSocket(authUser?._id)
+  console.log('Auth user:', authUser, 'Is loading:', isLoading, 'Path:', location.pathname);
 
   // Initialize theme on mount
   useEffect(() => {
@@ -83,6 +78,7 @@ function App() {
       htmlElement.classList.remove('dark');
     }
   }, [theme]);
+
  if(isLoading){
   return(
     <div className='h-screen flex justify-center items-center'>
@@ -110,6 +106,7 @@ function App() {
 
   // Landing page with full width
   if (!authUser && location.pathname === '/') {
+    console.log('Rendering landing page');
     return (
       <>
         <Routes>
@@ -123,6 +120,7 @@ function App() {
     )
   }
 
+  console.log('Rendering main app layout');
   // App layout with sidebar and right panel
   return (
     <>
@@ -146,4 +144,4 @@ function App() {
   )
 }
 
-export default App
+

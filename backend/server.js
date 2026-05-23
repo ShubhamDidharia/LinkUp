@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import { fileURLToPath } from "url";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,7 +29,46 @@ cloudinary.config({
 });
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+	cors: {
+		origin: process.env.NODE_ENV === "production" ? "" : ["http://localhost:5173", "http://localhost:3000"],
+		methods: ["GET", "POST"],
+		credentials: true
+	}
+});
+
 const PORT = process.env.PORT || 8000;
+
+// Store online users
+const onlineUsers = new Map(); // userId -> socketId
+
+// Socket.IO connection handler
+io.on("connection", (socket) => {
+	console.log(`New client connected: ${socket.id}`);
+
+	// When user comes online
+	socket.on("user_online", (userId) => {
+		onlineUsers.set(userId, socket.id);
+		socket.userId = userId;
+		console.log(`User ${userId} is online`);
+	});
+
+	// Handle disconnect
+	socket.on("disconnect", () => {
+		if (socket.userId) {
+			onlineUsers.delete(socket.userId);
+			console.log(`User ${socket.userId} is offline`);
+		}
+	});
+});
+
+// Make io accessible to routes
+app.use((req, res, next) => {
+	req.io = io;
+	req.onlineUsers = onlineUsers;
+	next();
+});
 
 app.use(express.json({ limit: "5mb" })); // to parse req.body
 // limit shouldn't be too high to prevent DOS
@@ -43,7 +84,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/reports", reportRoutes);
 
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 	connectDB();
 });

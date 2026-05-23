@@ -1,2 +1,61 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+@theme {
+  /* Remap blue scale to red scale */
+  --color-blue-50: var(--color-red-50);
+  --color-blue-100: var(--color-red-100);
+  --color-blue-200: var(--color-red-200);
+  --color-blue-300: var(--color-red-300);
+  --color-blue-400: var(--color-red-400);
+  --color-blue-500: var(--color-red-500);
+  --color-blue-600: var(--color-red-600);
+  --color-blue-700: var(--color-red-700);
+  --color-blue-800: var(--color-red-800);
+  --color-blue-900: var(--color-red-900);
+  --color-blue-950: var(--color-red-950);
+
+  /* Remap indigo scale to red scale */
+  --color-indigo-50: var(--color-red-50);
+  --color-indigo-100: var(--color-red-100);
+  --color-indigo-200: var(--color-red-200);
+  --color-indigo-300: var(--color-red-300);
+  --color-indigo-400: var(--color-red-400);
+  --color-indigo-500: var(--color-red-500);
+  --color-indigo-600: var(--color-red-600);
+  --color-indigo-700: var(--color-red-700);
+  --color-indigo-800: var(--color-red-800);
+  --color-indigo-900: var(--color-red-900);
+  --color-indigo-950: var(--color-red-950);
+
+  /* Remap purple scale to red scale */
+  --color-purple-50: var(--color-red-50);
+  --color-purple-100: var(--color-red-100);
+  --color-purple-200: var(--color-red-200);
+  --color-purple-300: var(--color-red-300);
+  --color-purple-400: var(--color-red-400);
+  --color-purple-500: var(--color-red-500);
+  --color-purple-600: var(--color-red-600);
+  --color-purple-700: var(--color-red-700);
+  --color-purple-800: var(--color-red-800);
+  --color-purple-900: var(--color-red-900);
+  --color-purple-950: var(--color-red-950);
+
+  /* Remap violet scale to red scale */
+  --color-violet-50: var(--color-red-50);
+  --color-violet-100: var(--color-red-100);
+  --color-violet-200: var(--color-red-200);
+  --color-violet-300: var(--color-red-300);
+  --color-violet-400: var(--color-red-400);
+  --color-violet-500: var(--color-red-500);
+  --color-violet-600: var(--color-red-600);
+  --color-violet-700: var(--color-red-700);
+  --color-violet-800: var(--color-red-800);
+  --color-violet-900: var(--color-red-900);
+  --color-violet-950: var(--color-red-950);
+
+  /* Remap DaisyUI theme primary & secondary colors */
+  --color-primary: var(--color-red-500);
+  --color-primary-content: #ffffff;
+  --color-secondary: var(--color-red-600);
+}

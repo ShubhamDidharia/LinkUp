@@ -378,7 +378,7 @@ const RightPanel = () => {
           </div>
 
           {/* Enhanced News Category Tabs */}
-          <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30">
+          <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
             <div className="relative">
               {/* Scroll Indicators */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
@@ -402,18 +402,18 @@ const RightPanel = () => {
                     const container = document.getElementById("news-categories")
                     container.scrollBy({ left: 120, behavior: "smooth" })
                   }}
-                  className="w-6 h-6 bg-white rounded-full shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  className="w-6 h-6 bg-white dark:bg-slate-700 rounded-full shadow-md border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-200 opacity-0 group-hover:opacity-100"
                   id="scroll-right-btn"
                 >
-                  <svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
 
               {/* Gradient Fade Effects */}
-              <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-slate-50 dark:from-slate-800/80 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-slate-50 dark:from-slate-800/80 to-transparent z-10 pointer-events-none"></div>
 
               {/* Categories Container */}
               <div
@@ -454,7 +454,7 @@ const RightPanel = () => {
                     className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
                       newsCategory === category.id
                         ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105"
-                        : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                        : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
                     }`}
                   >
                     <span className="text-sm">{category.icon}</span>
@@ -467,7 +467,7 @@ const RightPanel = () => {
               </div>
 
               {/* Scroll Progress Indicator */}
-              <div className="mt-2 h-0.5 bg-slate-200 rounded-full overflow-hidden">
+              <div className="mt-2 h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div
                   id="scroll-progress"
                   className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300 w-0"
@@ -482,11 +482,11 @@ const RightPanel = () => {
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
                     <div className="flex gap-3">
-                      <div className="w-16 h-12 bg-slate-200 rounded-lg"></div>
+                      <div className="w-16 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
                       <div className="flex-1 space-y-2">
-                        <div className="h-3 bg-slate-200 rounded w-full"></div>
-                        <div className="h-3 bg-slate-200 rounded w-3/4"></div>
-                        <div className="h-2 bg-slate-200 rounded w-1/2"></div>
+                        <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                        <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                        <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
                       </div>
                     </div>
                   </div>
@@ -502,11 +502,11 @@ const RightPanel = () => {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all duration-200 group border border-transparent hover:border-slate-200"
+                    className="block p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200 group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
                   >
                     <div className="flex gap-3">
                       {article.urlToImage && (
-                        <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+                        <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
                           <img
                             src={article.urlToImage || "/placeholder.svg"}
                             alt=""
@@ -518,13 +518,13 @@ const RightPanel = () => {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {article.title}
                         </h3>
                         {article.description && (
-                          <p className="text-xs text-slate-600 mt-1 line-clamp-2">{article.description}</p>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">{article.description}</p>
                         )}
-                        <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400">
                           <span className="font-medium">{article.source.name}</span>
                           <span>•</span>
                           <div className="flex items-center gap-1">
@@ -542,19 +542,19 @@ const RightPanel = () => {
 
             {newsError && (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-red-100 dark:from-red-900/30 to-orange-100 dark:to-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="text-2xl">📰</div>
                 </div>
-                <p className="text-slate-500 text-sm">Unable to load news</p>
-                <p className="text-slate-400 text-xs mt-1">Please try again later</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Unable to load news</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Please try again later</p>
               </div>
             )}
           </div>
 
-          <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
+          <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500">Powered by NewsAPI</span>
-              <div className="flex items-center gap-1 text-xs text-slate-500">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Powered by NewsAPI</span>
+              <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span>Live updates</span>
               </div>

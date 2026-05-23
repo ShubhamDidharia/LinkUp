@@ -2,7 +2,7 @@
 
 import XSvg from "../svgs/X"
 import { MdHomeFilled, MdSearch, MdShield } from "react-icons/md"
-import { IoNotifications, IoSettingsOutline } from "react-icons/io5"
+import { IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { FaBookmark } from "react-icons/fa6"
 import { Link, useLocation } from "react-router-dom"
@@ -93,9 +93,35 @@ const Sidebar = () => {
         <nav className="flex-1 px-3 md:px-4">
           <ul className="flex flex-col gap-2">
             {navItems.map((item) => {
-              const Icon = item.icon
               const active = isActive(item.path)
 
+              if (item.isCustom) {
+                return (
+                  <li key={item.path}>
+                    <div
+                      className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group relative ${
+                        active
+                          ? "bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow-sm"
+                          : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100"
+                      }`}
+                    >
+                      <div className="flex justify-center md:justify-start flex-1">
+                        <item.component />
+                      </div>
+                      <span
+                        className={`text-lg font-medium hidden md:block ${active ? "text-blue-600 dark:text-blue-400" : "text-slate-700 dark:text-slate-300"}`}
+                      >
+                        {item.label}
+                      </span>
+                      {active && (
+                        <div className="absolute right-2 w-2 h-2 bg-blue-500 rounded-full hidden md:block"></div>
+                      )}
+                    </div>
+                  </li>
+                )
+              }
+
+              const Icon = item.icon
               return (
                 <li key={item.path}>
                   <Link
