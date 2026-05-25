@@ -2,7 +2,6 @@
 
 import { Link } from "react-router-dom"
 import { useState } from "react"
-import XSvg from "../../../components/svgs/X"
 import { MdOutlineMail } from "react-icons/md"
 import { FaUser } from "react-icons/fa"
 import { MdPassword } from "react-icons/md"
@@ -53,8 +52,8 @@ const SignUpPage = () => {
         {/* Left Side - Logo */}
         <div className="flex-1 hidden lg:flex items-center justify-center p-12">
           <div className="text-center">
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-2xl mb-8 inline-block">
-              <XSvg className="w-24 h-24 fill-white" />
+            <div className="p-8 rounded-3xl bg-transparent shadow-2xl mb-8 inline-block">
+              <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-24 h-24 object-contain" />
             </div>
             <h2 className="text-4xl font-bold text-slate-800 mb-4">Join our community!</h2>
             <p className="text-xl text-slate-600">Create your account and start connecting with others</p>
@@ -67,8 +66,8 @@ const SignUpPage = () => {
             <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
               {/* Mobile Logo */}
               <div className="lg:hidden text-center mb-8">
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg mb-4 inline-block">
-                  <XSvg className="w-12 h-12 fill-white" />
+                <div className="p-6 rounded-2xl bg-transparent shadow-lg mb-4 inline-block">
+                  <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-12 h-12 object-contain" />
                 </div>
               </div>
 

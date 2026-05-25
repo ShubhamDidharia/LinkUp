@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import XSvg from "../../../components/svgs/X"
 import { MdOutlineMail } from "react-icons/md"
 import { MdPassword } from "react-icons/md"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -59,8 +58,8 @@ const LoginPage = () => {
         {/* Left Side - Logo */}
         <div className="flex-1 hidden lg:flex items-center justify-center p-12">
           <div className="text-center">
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-2xl mb-8 inline-block">
-              <XSvg className="w-24 h-24 fill-white" />
+            <div className="p-8 rounded-3xl bg-transparent shadow-2xl mb-8 inline-block">
+              <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-24 h-24 object-contain" />
             </div>
             <h2 className="text-4xl font-bold text-slate-800 mb-4">Welcome back!</h2>
             <p className="text-xl text-slate-600">Connect with friends and share your moments</p>
@@ -73,8 +72,8 @@ const LoginPage = () => {
             <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
               {/* Mobile Logo */}
               <div className="lg:hidden text-center mb-8">
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg mb-4 inline-block">
-                  <XSvg className="w-12 h-12 fill-white" />
+                <div className="p-6 rounded-2xl bg-transparent shadow-lg mb-4 inline-block">
+                  <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-12 h-12 object-contain" />
                 </div>
               </div>
 

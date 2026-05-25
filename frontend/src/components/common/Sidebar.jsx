@@ -1,6 +1,5 @@
 "use client"
 
-import XSvg from "../svgs/X"
 import { MdHomeFilled, MdSearch, MdShield } from "react-icons/md"
 import { IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
@@ -84,7 +83,7 @@ const Sidebar = () => {
         <div className="p-4 md:p-6">
           <Link to="/" className="flex justify-center md:justify-start group">
             <div className="p-2 rounded-2xl border border-[#2A2A2A] bg-transparent transition-all duration-200 group-hover:border-[#E8450A] group-hover:scale-105">
-              <XSvg className="w-8 h-8 text-[#E8450A]" />
+              <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-8 h-8 object-contain" />
             </div>
           </Link>
         </div>

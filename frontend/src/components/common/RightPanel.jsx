@@ -565,13 +565,13 @@ const RightPanel = () => {
         {/* Footer Links */}
         <div className="bg-[#1A1A1A] rounded-2xl shadow-sm border border-[#2A2A2A] p-6 transition-colors">
           <div className="flex flex-wrap gap-3 text-xs text-[#888888]">
-            <Link to="/terms" className="hover:text-white transition-colors">>
+            <Link to="/terms" className="hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="hover:text-white transition-colors">>
+            <Link to="/privacy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/cookies" className="hover:text-white transition-colors">>
+            <Link to="/cookies" className="hover:text-white transition-colors">
               Cookie Policy
             </Link>
             <Link to="/about" className="hover:text-white transition-colors">

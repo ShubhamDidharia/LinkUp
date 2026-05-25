@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Zap, Users, TrendingUp, ArrowRight } from 'lucide-react';
+import { Zap, Users, TrendingUp, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -17,9 +17,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
+            <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-10 h-10 object-contain transform group-hover:scale-110 transition-transform" />
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">linkUp</span>
           </Link>
 
@@ -219,9 +217,7 @@ export default function LandingPage() {
             {/* Brand */}
             <div>
               <div className="flex items-center space-x-2 mb-4 group cursor-pointer">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
+                <img src="/LinkUp main Logo.png" alt="LinkUp Logo" className="w-8 h-8 object-contain group-hover:scale-110 transition-transform" />
                 <span className="font-bold text-lg bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                   linkUp
                 </span>
