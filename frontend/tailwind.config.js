@@ -60,6 +60,14 @@ export default {
           800: "#1e293b",
           900: "#0f172a",
         },
+        // Custom theme colors
+        theme: {
+          dark: "#0D0D1A",
+          purple: "#7B2FBE",
+          pink: "#C84B9F",
+          coral: "#FF6B6B",
+          yellow: "#FFD93D",
+        },
       },
       // Add custom box shadows for modern cards
       boxShadow: {
@@ -75,16 +83,19 @@ export default {
       {
         black: {
           ...daisyUIThemes["black"],
-          primary: "rgb(239, 68, 68)",
-          secondary: "rgb(24, 24, 24)",
-          // Override background colors to remove black
-          "base-100": "#ffffff", // Main background - white
-          "base-200": "#f8fafc", // Secondary background - very light gray
-          "base-300": "#f1f5f9", // Tertiary background - light gray
-          "base-content": "#1e293b", // Text color - dark gray instead of white
-          // Keep other colors but make them work with light background
-          neutral: "#64748b",
+          primary: "#7B2FBE", // Purple
+          secondary: "#C84B9F", // Pink
+          accent: "#FF6B6B", // Coral
+          "base-100": "#0D0D1A", // Dark background
+          "base-200": "#1a1a2e", // Slightly lighter dark
+          "base-300": "#252540", // Even lighter dark
+          "base-content": "#ffffff", // White text
+          neutral: "#4a4a6a",
           "neutral-content": "#ffffff",
+          "info": "#7B2FBE",
+          "success": "#FFD93D",
+          "warning": "#FF6B6B",
+          "error": "#FF6B6B",
         },
       },
     ],

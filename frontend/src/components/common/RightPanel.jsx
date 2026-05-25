@@ -278,11 +278,11 @@ const RightPanel = () => {
     <div className="hidden lg:block w-80 p-4">
       <div className="sticky top-4 space-y-6">
         {/* Who to Follow Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+        <div className="bg-[#1A1A1A] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden transition-colors\">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-50 dark:from-blue-900/30 to-purple-50 dark:to-purple-900/30 px-6 py-4 border-b border-slate-100 dark:border-slate-700">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Who to follow</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Discover amazing people</p>
+          <div className="bg-[#1A1A1A] px-6 py-4 border-b border-[#2A2A2A]">
+            <h2 className="text-xl font-bold text-white">Who to follow</h2>
+            <p className="text-sm text-[#888888] mt-1">Discover amazing people</p>
           </div>
 
           {/* Content */}
@@ -298,10 +298,10 @@ const RightPanel = () => {
 
             {!isLoading && suggestedUsers?.length === 0 && (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 dark:from-blue-900/40 to-purple-100 dark:to-purple-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#2A2A2A] border border-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="text-2xl">👥</div>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">No suggestions available</p>
+                <p className="text-[#888888] text-sm">No suggestions available</p>
               </div>
             )}
 
@@ -310,7 +310,7 @@ const RightPanel = () => {
                 {suggestedUsers.map((user, index) => (
                   <div
                     key={user._id}
-                    className="group p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 animate-fade-in-up"
+                    className="group p-3 rounded-xl hover:bg-[#2A2A2A] transition-all duration-200 animate-fade-in-up"
                     style={{
                       animationDelay: `${index * 100}ms`,
                     }}
@@ -318,7 +318,7 @@ const RightPanel = () => {
                     <div className="flex items-center justify-between">
                       <Link to={`/profile/${user.username}`} className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white dark:ring-slate-700 shadow-md group-hover:ring-blue-200 dark:group-hover:ring-blue-500 transition-all duration-200">
+                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-[#2A2A2A] shadow-md group-hover:ring-[#E8450A] transition-all duration-200">
                             <img
                               src={user.profileImage || "/avatar-placeholder.png"}
                               alt={`${user.fullName}'s avatar`}
@@ -329,15 +329,15 @@ const RightPanel = () => {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          <p className="font-semibold text-white truncate group-hover:text-[#E8450A] transition-colors">
                             {user.fullName}
                           </p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400 truncate">@{user.username}</p>
+                          <p className="text-sm text-[#888888] truncate">@{user.username}</p>
                         </div>
                       </Link>
 
                       <button
-                        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-full hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px] flex items-center justify-center"
+                        className="px-4 py-2 bg-[#2A2A2A] text-white text-sm font-medium rounded-full hover:bg-[#333333] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px] flex items-center justify-center border border-[#2A2A2A]"
                         onClick={(e) => {
                           e.preventDefault()
                           follow(user._id)
@@ -412,8 +412,8 @@ const RightPanel = () => {
               </div>
 
               {/* Gradient Fade Effects */}
-              <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-slate-50 dark:from-slate-800/80 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-slate-50 dark:from-slate-800/80 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#1A1A1A] to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#1A1A1A] to-transparent z-10 pointer-events-none"></div>
 
               {/* Categories Container */}
               <div
@@ -453,8 +453,8 @@ const RightPanel = () => {
                     onClick={() => setNewsCategory(category.id)}
                     className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
                       newsCategory === category.id
-                        ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105"
-                        : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
+                        ? "bg-[#E8450A] text-white shadow-lg scale-105"
+                        : "bg-[#2A2A2A] text-white hover:bg-[#333333] border border-[#2A2A2A] hover:border-[#2A2A2A] hover:shadow-sm"
                     }`}
                   >
                     <span className="text-sm">{category.icon}</span>
@@ -467,26 +467,26 @@ const RightPanel = () => {
               </div>
 
               {/* Scroll Progress Indicator */}
-              <div className="mt-2 h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="mt-2 h-0.5 bg-[#2A2A2A] rounded-full overflow-hidden">
                 <div
                   id="scroll-progress"
-                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300 w-0"
+                  className="h-full bg-[#E8450A] rounded-full transition-all duration-300 w-0"
                 ></div>
               </div>
             </div>
           </div>
 
-          <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
+          <div className="p-4 space-y-4 max-h-96 overflow-y-auto bg-[#1A1A1A]">
             {isLoadingNews && (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
                     <div className="flex gap-3">
-                      <div className="w-16 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
+                      <div className="w-16 h-12 bg-[#2A2A2A] rounded-lg"></div>
                       <div className="flex-1 space-y-2">
-                        <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
-                        <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
-                        <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                        <div className="h-3 bg-[#2A2A2A] rounded w-full"></div>
+                        <div className="h-3 bg-[#2A2A2A] rounded w-3/4"></div>
+                        <div className="h-2 bg-[#2A2A2A] rounded w-1/2"></div>
                       </div>
                     </div>
                   </div>
@@ -502,11 +502,11 @@ const RightPanel = () => {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200 group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                    className="block p-3 rounded-xl hover:bg-[#2A2A2A] cursor-pointer transition-all duration-200 group border border-transparent hover:border-[#2A2A2A]"
                   >
                     <div className="flex gap-3">
                       {article.urlToImage && (
-                        <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+                        <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-[#2A2A2A]">
                           <img
                             src={article.urlToImage || "/placeholder.svg"}
                             alt=""
@@ -518,13 +518,13 @@ const RightPanel = () => {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2 group-hover:text-[#E8450A] transition-colors">
                           {article.title}
                         </h3>
                         {article.description && (
-                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">{article.description}</p>
+                          <p className="text-xs text-[#888888] mt-1 line-clamp-2">{article.description}</p>
                         )}
-                        <div className="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-2 mt-2 text-xs text-[#888888]">
                           <span className="font-medium">{article.source.name}</span>
                           <span>•</span>
                           <div className="flex items-center gap-1">
@@ -542,19 +542,19 @@ const RightPanel = () => {
 
             {newsError && (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-100 dark:from-red-900/30 to-orange-100 dark:to-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#2A2A2A] rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="text-2xl">📰</div>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Unable to load news</p>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Please try again later</p>
+                <p className="text-[#888888] text-sm">Unable to load news</p>
+                <p className="text-[#666666] text-xs mt-1">Please try again later</p>
               </div>
             )}
           </div>
 
-          <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700/80">
+          <div className="px-6 py-4 bg-[#111111] border-t border-[#2A2A2A]">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500 dark:text-slate-400">Powered by NewsAPI</span>
-              <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-xs text-[#888888]">Powered by NewsAPI</span>
+              <div className="flex items-center gap-1 text-xs text-[#888888]">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span>Live updates</span>
               </div>
@@ -563,22 +563,22 @@ const RightPanel = () => {
         </div>
 
         {/* Footer Links */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
-          <div className="flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
-            <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+        <div className="bg-[#1A1A1A] rounded-2xl shadow-sm border border-[#2A2A2A] p-6 transition-colors">
+          <div className="flex flex-wrap gap-3 text-xs text-[#888888]">
+            <Link to="/terms" className="hover:text-white transition-colors">>
               Terms of Service
             </Link>
-            <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <Link to="/privacy" className="hover:text-white transition-colors">>
               Privacy Policy
             </Link>
-            <Link to="/cookies" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <Link to="/cookies" className="hover:text-white transition-colors">>
               Cookie Policy
             </Link>
-            <Link to="/about" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <Link to="/about" className="hover:text-white transition-colors">
               About
             </Link>
           </div>
-          <p className="text-xs text-slate-400 mt-3">© 2024 Your Social App. All rights reserved.</p>
+          <p className="text-xs text-[#666666] mt-3">© 2024 Your Social App. All rights reserved.</p>
         </div>
       </div>
     </div>

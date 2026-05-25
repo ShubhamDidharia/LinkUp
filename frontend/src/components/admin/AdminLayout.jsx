@@ -179,7 +179,7 @@ const AdminDashboard = () => {
             {/* Header Area */}
             <div className="flex justify-between items-center flex-wrap gap-4 border-b border-slate-900 pb-6">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-theme-pink via-theme-purple to-theme-coral bg-clip-text text-transparent">
                         Admin Command Center
                     </h1>
                     <p className="text-slate-400 mt-1 text-sm font-medium">
@@ -196,12 +196,12 @@ const AdminDashboard = () => {
             </div>
 
             {/* Main Tabs Selection Navigation */}
-            <div className="tabs tabs-boxed bg-slate-900/60 p-1 border border-slate-850 max-w-lg rounded-xl flex">
+            <div className="tabs tabs-boxed bg-theme-dark/60 p-1 border border-theme-purple/30 max-w-lg rounded-xl flex">
                 <button 
                     onClick={() => setActiveTab("overview")}
                     className={`flex-1 py-2 text-sm font-semibold rounded-lg flex justify-center items-center gap-2 transition-all cursor-pointer ${
                         activeTab === "overview" 
-                            ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/10" 
+                            ? "bg-gradient-to-r from-theme-purple to-theme-pink text-white shadow-md shadow-theme-purple/10" 
                             : "text-slate-400 hover:text-slate-200"
                     }`}
                 >
@@ -212,7 +212,7 @@ const AdminDashboard = () => {
                     onClick={() => setActiveTab("settings")}
                     className={`flex-1 py-2 text-sm font-semibold rounded-lg flex justify-center items-center gap-2 transition-all cursor-pointer ${
                         activeTab === "settings" 
-                            ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/10" 
+                            ? "bg-gradient-to-r from-theme-purple to-theme-pink text-white shadow-md shadow-theme-purple/10" 
                             : "text-slate-400 hover:text-slate-200"
                     }`}
                 >
@@ -223,7 +223,7 @@ const AdminDashboard = () => {
                     onClick={() => setActiveTab("logs")}
                     className={`flex-1 py-2 text-sm font-semibold rounded-lg flex justify-center items-center gap-2 transition-all cursor-pointer ${
                         activeTab === "logs" 
-                            ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/10" 
+                            ? "bg-gradient-to-r from-theme-purple to-theme-pink text-white shadow-md shadow-theme-purple/10" 
                             : "text-slate-400 hover:text-slate-200"
                     }`}
                 >
@@ -238,9 +238,9 @@ const AdminDashboard = () => {
                     {/* Top Level Metric Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Reports Status Card */}
-                        <div className="card bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-900/40 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
+                        <div className="card bg-gradient-to-br from-theme-purple/20 to-theme-dark border border-theme-purple/30 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
                             <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+                                <span className="w-2 h-2 rounded-full bg-theme-purple animate-ping"></span>
                                 Pending Reports
                             </h2>
                             <p className="text-5xl font-black mt-3 text-white tracking-tight">{stats?.reports?.pending || 0}</p>
@@ -252,9 +252,9 @@ const AdminDashboard = () => {
 
                         {/* Accounts Suspended Card (clickable -> Users At Risk) */}
                         <Link to="/admin/users-at-risk" className="block">
-                            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200 hover:border-indigo-600/30">
+                            <div className="card bg-theme-dark/80 border border-theme-pink/20 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200 hover:border-theme-pink/40">
                                 <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                    <FaUsers className="text-indigo-400 text-sm" />
+                                    <FaUsers className="text-theme-pink text-sm" />
                                     Users Overview
                                 </h2>
                                 <p className="text-5xl font-black mt-3 text-white tracking-tight">{stats?.users?.total || 0}</p>
@@ -266,25 +266,25 @@ const AdminDashboard = () => {
                         </Link>
 
                         {/* Content Moderation Flagged Card */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
+                        <div className="card bg-theme-dark/80 border border-theme-coral/20 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
                             <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <FaFileAlt className="text-indigo-400 text-sm" />
+                                <FaFileAlt className="text-theme-coral text-sm" />
                                 Content Flags
                             </h2>
-                            <p className="text-5xl font-black mt-3 text-amber-500 tracking-tight">{stats?.posts?.autoFlagged || 0}</p>
+                            <p className="text-5xl font-black mt-3 text-theme-yellow tracking-tight">{stats?.posts?.autoFlagged || 0}</p>
                             <div className="mt-4 text-xs text-slate-500 flex justify-between">
                                 <span>Total Posts: {stats?.posts?.total || 0}</span>
-                                <span className="text-rose-400">NSFW Tagged: {stats?.posts?.nsfw || 0}</span>
+                                <span className="text-theme-coral">NSFW Tagged: {stats?.posts?.nsfw || 0}</span>
                             </div>
                         </div>
 
                         {/* Active Sessions count Card */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
+                        <div className="card bg-theme-dark/80 border border-theme-yellow/20 shadow-xl rounded-2xl p-6 hover:scale-[1.02] transition-transform duration-200">
                             <h2 className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-theme-yellow inline-block"></span>
                                 Users Live Online
                             </h2>
-                            <p className="text-5xl font-black mt-3 text-emerald-400 tracking-tight">{health?.activeSocketSessions || 0}</p>
+                            <p className="text-5xl font-black mt-3 text-theme-yellow tracking-tight">{health?.activeSocketSessions || 0}</p>
                             <div className="mt-4 text-xs text-slate-500">
                                 Real-time active socket client integrations.
                             </div>
@@ -294,10 +294,10 @@ const AdminDashboard = () => {
                     {/* Chart Visualization Section */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* 7 Days Report Trend SVG Chart */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6">
+                        <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl p-6">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-white text-lg">7-Day Violation Reports Trend</h3>
-                                <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-xs font-bold">
+                                <span className="px-2.5 py-1 bg-theme-purple/10 text-theme-purple rounded-full text-xs font-bold">
                                     Last Week
                                 </span>
                             </div>
@@ -306,8 +306,8 @@ const AdminDashboard = () => {
                                 <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
                                     <defs>
                                         <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
-                                            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+                                            <stop offset="0%" stopColor="#7B2FBE" stopOpacity="0.4" />
+                                            <stop offset="100%" stopColor="#7B2FBE" stopOpacity="0.0" />
                                         </linearGradient>
                                     </defs>
                                     
@@ -325,7 +325,7 @@ const AdminDashboard = () => {
                                     {/* Area Polyline Line */}
                                     <polyline 
                                         fill="none" 
-                                        stroke="#6366f1" 
+                                        stroke="#7B2FBE" 
                                         strokeWidth="3.5" 
                                         points={points} 
                                     />
@@ -340,8 +340,8 @@ const AdminDashboard = () => {
                                                     cx={x} 
                                                     cy={y} 
                                                     r="5" 
-                                                    fill="#6366f1" 
-                                                    stroke="#0f172a" 
+                                                    fill="#7B2FBE" 
+                                                    stroke="#0D0D1A" 
                                                     strokeWidth="2.5" 
                                                     className="transition-all duration-200 hover:r-7"
                                                 />
@@ -363,7 +363,7 @@ const AdminDashboard = () => {
                         </div>
 
                         {/* Report Category breakdown visual list */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6">
+                        <div className="card bg-theme-dark/80 border border-theme-pink/20 shadow-xl rounded-2xl p-6">
                             <h3 className="font-bold text-white text-lg mb-6">Report Category Distribution</h3>
                             
                             <div className="space-y-4">
@@ -375,7 +375,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden">
                                         <div 
-                                            className="bg-indigo-500 h-full rounded-full transition-all duration-500" 
+                                            className="bg-theme-purple h-full rounded-full transition-all duration-500" 
                                             style={{ width: `${(rTypes.post / totalTypeReports * 100)}%` }}
                                         ></div>
                                     </div>
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden">
                                         <div 
-                                            className="bg-violet-500 h-full rounded-full transition-all duration-500" 
+                                            className="bg-theme-pink h-full rounded-full transition-all duration-500" 
                                             style={{ width: `${(rTypes.comment / totalTypeReports * 100)}%` }}
                                         ></div>
                                     </div>
@@ -403,7 +403,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden">
                                         <div 
-                                            className="bg-cyan-500 h-full rounded-full transition-all duration-500" 
+                                            className="bg-theme-coral h-full rounded-full transition-all duration-500" 
                                             style={{ width: `${(rTypes.profileImage / totalTypeReports * 100)}%` }}
                                         ></div>
                                     </div>
@@ -417,7 +417,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden">
                                         <div 
-                                            className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                                            className="bg-theme-yellow h-full rounded-full transition-all duration-500" 
                                             style={{ width: `${((rTypes.username + rTypes.coverImage) / totalTypeReports * 100)}%` }}
                                         ></div>
                                     </div>
@@ -427,9 +427,9 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Infrastructure Health Status Panel */}
-                    <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6">
+                    <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl p-6">
                         <h3 className="font-bold text-white text-lg mb-6 flex items-center gap-2">
-                            <FaServer className="text-indigo-400" />
+                            <FaServer className="text-theme-purple" />
                             System Health & Infrastructure Diagnostics
                         </h3>
                         
@@ -437,7 +437,7 @@ const AdminDashboard = () => {
                             {/* MongoDB Connection Status */}
                             <div className="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex items-center justify-between">
                                 <div className="flex items-center gap-4.5">
-                                    <div className="p-3 bg-slate-900 rounded-xl text-emerald-400 border border-slate-800">
+                                    <div className="p-3 bg-slate-900 rounded-xl text-theme-yellow border border-slate-800">
                                         <FaDatabase className="text-xl" />
                                     </div>
                                     <div>
@@ -447,8 +447,8 @@ const AdminDashboard = () => {
                                 </div>
                                 <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${
                                     health?.mongoStatus === "connected" 
-                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                        ? "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20" 
+                                        : "bg-theme-coral/10 text-theme-coral border-theme-coral/20"
                                 }`}>
                                     {health?.mongoStatus === "connected" ? <FaCheckCircle className="text-xs" /> : <FaExclamationCircle className="text-xs" />}
                                     <span>{health?.mongoStatus}</span>
@@ -458,7 +458,7 @@ const AdminDashboard = () => {
                             {/* Cloudinary Integration Status */}
                             <div className="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex items-center justify-between">
                                 <div className="flex items-center gap-4.5">
-                                    <div className="p-3 bg-slate-900 rounded-xl text-cyan-400 border border-slate-800">
+                                    <div className="p-3 bg-slate-900 rounded-xl text-theme-pink border border-slate-800">
                                         <FaCloud className="text-xl" />
                                     </div>
                                     <div>
@@ -468,8 +468,8 @@ const AdminDashboard = () => {
                                 </div>
                                 <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${
                                     health?.cloudinaryStatus === "connected" 
-                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                        ? "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20" 
+                                        : "bg-theme-coral/10 text-theme-coral border-theme-coral/20"
                                 }`}>
                                     {health?.cloudinaryStatus === "connected" ? <FaCheckCircle className="text-xs" /> : <FaExclamationCircle className="text-xs" />}
                                     <span>{health?.cloudinaryStatus}</span>
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
                             {/* Gemini AI API Key Status */}
                             <div className="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex items-center justify-between">
                                 <div className="flex items-center gap-4.5">
-                                    <div className="p-3 bg-slate-900 rounded-xl text-violet-400 border border-slate-800">
+                                    <div className="p-3 bg-slate-900 rounded-xl text-theme-purple border border-slate-800">
                                         <FaBrain className="text-xl" />
                                     </div>
                                     <div>
@@ -489,8 +489,8 @@ const AdminDashboard = () => {
                                 </div>
                                 <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${
                                     health?.geminiStatus === "connected" 
-                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                        ? "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20" 
+                                        : "bg-theme-coral/10 text-theme-coral border-theme-coral/20"
                                 }`}>
                                     {health?.geminiStatus === "connected" ? <FaCheckCircle className="text-xs" /> : <FaExclamationCircle className="text-xs" />}
                                     <span>{health?.geminiStatus}</span>
@@ -508,9 +508,9 @@ const AdminDashboard = () => {
                         
                         {/* Settings Left Column: Controls & Thresholds */}
                         <div className="lg:col-span-2 space-y-6">
-                            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 space-y-6">
+                            <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl p-6 space-y-6">
                                 <h3 className="font-bold text-white text-lg border-b border-slate-850 pb-3 flex items-center gap-2">
-                                    <FaCog className="text-indigo-400" />
+                                    <FaCog className="text-theme-purple" />
                                     Global Moderation Toggles
                                 </h3>
 
@@ -543,9 +543,9 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 space-y-6">
+                            <div className="card bg-theme-dark/80 border border-theme-pink/20 shadow-xl rounded-2xl p-6 space-y-6">
                                 <h3 className="font-bold text-white text-lg border-b border-slate-850 pb-3 flex items-center gap-2">
-                                    <FaUserShield className="text-indigo-400" />
+                                    <FaUserShield className="text-theme-pink" />
                                     Automated Discipline Thresholds
                                 </h3>
 
@@ -561,7 +561,7 @@ const AdminDashboard = () => {
                                             onChange={(e) => setStrikeLimitReview(e.target.value)}
                                             min="1"
                                             max="10"
-                                            className="input input-bordered w-full bg-slate-950 border-slate-850 text-slate-100 rounded-xl focus:border-indigo-500" 
+                                            className="input input-bordered w-full bg-slate-950 border-slate-850 text-slate-100 rounded-xl focus:border-theme-purple" 
                                         />
                                         <p className="text-[11px] text-slate-500">Accumulating this count marks the account status as "under_review".</p>
                                     </div>
@@ -577,7 +577,7 @@ const AdminDashboard = () => {
                                             onChange={(e) => setStrikeLimitSuspend(e.target.value)}
                                             min="1"
                                             max="20"
-                                            className="input input-bordered w-full bg-slate-950 border-slate-850 text-slate-100 rounded-xl focus:border-indigo-500" 
+                                            className="input input-bordered w-full bg-slate-950 border-slate-850 text-slate-100 rounded-xl focus:border-theme-purple" 
                                         />
                                         <p className="text-[11px] text-slate-500">Hitting this count immediately locks out user and suspends access.</p>
                                     </div>
@@ -586,9 +586,9 @@ const AdminDashboard = () => {
                         </div>
 
                         {/* Settings Right Column: Forbidden Words List */}
-                        <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 space-y-6">
+                        <div className="card bg-theme-dark/80 border border-theme-coral/20 shadow-xl rounded-2xl p-6 space-y-6">
                             <h3 className="font-bold text-white text-lg border-b border-slate-850 pb-3 flex items-center gap-2">
-                                <FaTrashAlt className="text-rose-400" />
+                                <FaTrashAlt className="text-theme-coral" />
                                 Custom Forbidden Words
                             </h3>
                             
@@ -604,7 +604,7 @@ const AdminDashboard = () => {
                                 <button 
                                     type="button"
                                     onClick={handleAddWord}
-                                    className="btn btn-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl border-none font-bold"
+                                    className="btn btn-sm bg-theme-purple hover:bg-theme-purple/80 text-white rounded-xl border-none font-bold"
                                 >
                                     <FaPlus />
                                 </button>
@@ -616,13 +616,13 @@ const AdminDashboard = () => {
                                     bannedWords.map((word, index) => (
                                         <span 
                                             key={index} 
-                                            className="badge bg-slate-900 border border-slate-800 text-slate-300 font-medium py-2.5 px-3 rounded-lg flex items-center gap-1.5 text-[11px]"
+                                            className="badge bg-slate-900 border border-slate-800 text-slate-300 font-medium py-2.5 px-3 rounded-lg flex items-center gap-1.5 text-[11px] hover:border-theme-coral/50 transition-colors"
                                         >
                                             <span>{word}</span>
                                             <button 
                                                 type="button" 
                                                 onClick={() => handleRemoveWord(word)}
-                                                className="text-slate-500 hover:text-rose-400 cursor-pointer"
+                                                className="text-slate-500 hover:text-theme-coral cursor-pointer"
                                             >
                                                 &times;
                                             </button>
@@ -643,7 +643,7 @@ const AdminDashboard = () => {
                         <button 
                             type="submit" 
                             disabled={updateSettingsMutation.isPending}
-                            className="btn bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-8 rounded-xl border-none shadow-lg shadow-indigo-600/10 cursor-pointer disabled:opacity-50"
+                            className="btn bg-theme-purple hover:bg-theme-purple/80 text-white font-extrabold px-8 rounded-xl border-none shadow-lg shadow-theme-purple/10 cursor-pointer disabled:opacity-50"
                         >
                             {updateSettingsMutation.isPending ? "Saving configuration..." : "Save Policy Config"}
                         </button>
@@ -653,10 +653,10 @@ const AdminDashboard = () => {
 
             {/* TAB: SYSTEM AUDIT LOGS */}
             {activeTab === "logs" && (
-                <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl p-6 space-y-6 animate-fade-in">
+                <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl p-6 space-y-6 animate-fade-in">
                     <div className="flex justify-between items-center border-b border-slate-850 pb-4">
                         <h3 className="font-bold text-white text-lg flex items-center gap-2">
-                            <FaHistory className="text-indigo-400" />
+                            <FaHistory className="text-theme-purple" />
                             Incident Resolution Audit Feed
                         </h3>
                         <span className="text-xs text-slate-500 font-semibold uppercase">

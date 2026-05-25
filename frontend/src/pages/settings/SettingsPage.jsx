@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
 const SettingsPage = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
   const [hideNSFW, setHideNSFW] = useState(true);
 
@@ -48,6 +49,47 @@ const SettingsPage = () => {
     },
   });
 
+  const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch("/api/users/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to delete account");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Account deleted successfully");
+      // Clear all cached data
+      queryClient.invalidateQueries();
+      // Redirect to login
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleDeleteAccount = () => {
+    const confirmed = window.confirm(
+      "Are you absolutely sure? This will permanently delete your account and all associated data.\n\nThis action cannot be undone."
+    );
+    if (confirmed) {
+      deleteAccount();
+    }
+  };
+
   const handleToggleNsfw = () => {
     const newValue = !hideNSFW;
     setHideNSFW(newValue);
@@ -55,31 +97,31 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-slate-50 dark:from-slate-900/50 to-white dark:to-slate-900 min-h-screen border-x border-slate-200 dark:border-slate-700 transition-colors">
-      <div className="sticky top-0 z-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
+    <div className="flex-1 bg-[#0D0D0D] min-h-screen border-x border-[#2A2A2A] transition-colors\">
+      <div className="sticky top-0 z-20 bg-[#111111]/95 backdrop-blur-xl border-b border-[#2A2A2A] shadow-sm transition-colors\">
         <div className="flex gap-6 px-6 py-4 items-center">
           <Link
             to="/"
-            className="p-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
+            className="p-3 rounded-full hover:bg-[#1A1A1A] transition-all duration-200 hover:scale-105"
           >
-            <FaArrowLeft className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+            <FaArrowLeft className="w-5 h-5 text-white" />
           </Link>
           <div className="flex flex-col flex-1">
-            <h1 className="font-bold text-xl text-slate-900 dark:text-slate-100">Settings</h1>
+            <h1 className="font-bold text-xl text-white\">Settings</h1>
           </div>
         </div>
       </div>
 
       <div className="p-8">
-        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg border border-slate-100 dark:border-slate-700 transition-colors max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">
+        <div className="bg-[#1A1A1A] rounded-3xl p-8 shadow-lg border border-[#2A2A2A] transition-colors max-w-2xl mx-auto\">
+          <h2 className="text-2xl font-bold text-white mb-6 border-b border-[#2A2A2A] pb-4">
             Content Preferences
           </h2>
           
           <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1 pr-4">
-              <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Hide NSFW Content</span>
-              <span className="text-sm text-slate-500 dark:text-slate-400">
+              <span className="text-lg font-semibold text-white">Hide NSFW Content</span>
+              <span className="text-sm text-[#888888]">
                 Hide content marked as Not Safe For Work from your feeds altogether.
               </span>
             </div>
@@ -87,8 +129,8 @@ const SettingsPage = () => {
             <button
               onClick={handleToggleNsfw}
               disabled={isPending}
-              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                hideNSFW ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'
+              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8450A] focus:ring-offset-2 ${
+                hideNSFW ? 'bg-[#E8450A]' : 'bg-[#2A2A2A]'
               } ${isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
               <span className="sr-only">Toggle NSFW filter</span>
@@ -99,6 +141,22 @@ const SettingsPage = () => {
               />
             </button>
           </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-[#2A1A1A] rounded-3xl p-8 shadow-lg border border-[#8B0000] transition-colors max-w-2xl mx-auto mt-6\">
+          <h2 className="text-2xl font-bold text-red-500 mb-2 pb-4\">Danger Zone</h2>
+          <p className="text-[#888888] mb-6\">
+            Permanently delete your account and all associated data. This action cannot be undone.
+          </p>
+
+          <button
+            onClick={handleDeleteAccount}
+            disabled={isDeleting}
+            className="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDeleting ? "Deleting Account..." : "Delete My Account"}
+          </button>
         </div>
       </div>
     </div>

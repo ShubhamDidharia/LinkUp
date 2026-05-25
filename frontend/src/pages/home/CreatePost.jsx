@@ -353,7 +353,7 @@ const CreatePost = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 p-6 transition-colors">
+    <div className="bg-[#111111] border-b border-[#2A2A2A] p-6 transition-colors">
       <div className="flex gap-4">
         {/* User Avatar */}
         <div className="flex-shrink-0">
@@ -381,10 +381,10 @@ const CreatePost = () => {
               </div>
             )}
             {/* Text Input with Dark Background */}
-            <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4 border border-slate-200 dark:border-slate-600 focus-within:bg-white dark:focus-within:bg-slate-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+          <div className="bg-[#2A2A2A] rounded-xl p-4 border border-[#2A2A2A] focus-within:bg-[#2A2A2A] focus-within:ring-2 focus-within:ring-[#E8450A] focus-within:border-transparent transition-all duration-200">
               <textarea
                 ref={textareaRef}
-                className="w-full text-xl text-slate-800 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 resize-none border-none focus:outline-none bg-transparent"
+                className="w-full text-xl text-white placeholder-slate-500 resize-none border-none focus:outline-none bg-transparent"
                 placeholder="What's happening?"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -394,7 +394,7 @@ const CreatePost = () => {
 
             {/* Image Preview */}
             {img && (
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 max-w-md">
+              <div className="relative rounded-2xl overflow-hidden border border-[#2A2A2A] max-w-md">
                 <button
                   type="button"
                   className="absolute top-3 right-3 p-2 bg-black/70 dark:bg-black/50 rounded-full text-white hover:bg-black/80 transition-colors z-10"
@@ -410,11 +410,11 @@ const CreatePost = () => {
             )}
 
             {/* Actions Bar */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
+            <div className="flex items-center justify-between pt-4 border-t border-[#2A2A2A]">
               <div className="flex items-center gap-4 relative">
                 <button
                   type="button"
-                  className="p-2 rounded-full text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                  className="p-2 rounded-full text-[#888888] hover:text-[#E8450A] hover:bg-[#1A1A1A] transition-colors"
                   onClick={() => imgRef.current.click()}
                 >
                   <CiImageOn className="w-6 h-6" />
@@ -423,7 +423,7 @@ const CreatePost = () => {
                 {/* AI Post Generator Button */}
                 <button
                   type="button"
-                  className="p-2 rounded-full text-purple-500 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors flex items-center gap-2"
+                  className="p-2 rounded-full text-[#888888] hover:text-[#E8450A] hover:bg-[#1A1A1A] transition-colors flex items-center gap-2"
                   onClick={() => setShowAIGenerator(true)}
                   title="Generate post with AI"
                 >
@@ -436,8 +436,8 @@ const CreatePost = () => {
                     type="button"
                     className={`p-2 rounded-full transition-colors ${
                       showEmojiPicker 
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30" 
-                        : "text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                        ? "text-[#E8450A] bg-[#1A1A1A]" 
+                        : "text-[#888888] hover:text-[#E8450A] hover:bg-[#1A1A1A]"
                     }`}
                     onClick={toggleEmojiPicker}
                   >
@@ -446,7 +446,7 @@ const CreatePost = () => {
 
                   {/* Emoji Picker Dropdown */}
                   {showEmojiPicker && (
-                    <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-4 w-80 max-h-64 overflow-y-auto z-20 transition-colors">
+                    <div className="absolute bottom-full left-0 mb-2 bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl shadow-xl p-4 w-80 max-h-64 overflow-y-auto z-20 transition-colors\">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Choose an emoji</h3>
                         <button
@@ -488,7 +488,7 @@ const CreatePost = () => {
               <button
                 type="submit"
                 disabled={isPending || (!text.trim() && !img)}
-                className="px-6 py-2 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-[#1A1A1A] text-white rounded-full font-semibold hover:bg-[#2A2A2A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#2A2A2A]"
               >
                 {isPending ? "Posting..." : "Post"}
               </button>
@@ -514,12 +514,12 @@ const CreatePost = () => {
       {showAIGenerator && (
         <>
           <div className="fixed inset-0 bg-black/50 z-30" onClick={() => !aiLoading && setShowAIGenerator(false)} />
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-96 z-40 overflow-hidden flex flex-col">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#111111] rounded-2xl shadow-2xl w-full max-w-2xl max-h-96 z-40 overflow-hidden flex flex-col border border-[#2A2A2A]">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+            <div className="flex items-center justify-between p-6 border-b border-[#2A2A2A]">
               <div className="flex items-center gap-2">
-                <MdOutlineAutoAwesome className="w-6 h-6 text-purple-500" />
-                <h2 className="text-xl font-bold text-slate-900">Generate Post with AI</h2>
+                <MdOutlineAutoAwesome className="w-6 h-6 text-[#E8450A]" />
+                <h2 className="text-xl font-bold text-white">Generate Post with AI</h2>
               </div>
               <button
                 onClick={() => !aiLoading && setShowAIGenerator(false)}
@@ -539,7 +539,7 @@ const CreatePost = () => {
                       What do you want to post about?
                     </label>
                     <textarea
-                      className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-slate-900"
+                      className="w-full p-3 border border-[#2A2A2A] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E8450A] focus:border-transparent resize-none text-white bg-[#1A1A1A]"
                       placeholder="E.g., 'I just finished a marathon', 'Celebrating my promotion', 'Check out my new coffee shop'..."
                       rows={4}
                       value={aiDescription}
@@ -547,7 +547,7 @@ const CreatePost = () => {
                       disabled={aiLoading}
                     />
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-400">
                     💡 Tip: Be vague and descriptive. The AI will generate authentic, engaging post content for you.
                   </p>
                 </div>
@@ -555,8 +555,8 @@ const CreatePost = () => {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm font-semibold text-slate-700 mb-2">Generated Post:</p>
-                    <div className="p-4 bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-xl">
-                      <p className="text-slate-800 leading-relaxed whitespace-pre-wrap">{generatedContent}</p>
+                    <div className="p-4 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl">
+                      <p className="text-white leading-relaxed whitespace-pre-wrap">{generatedContent}</p>
                     </div>
                   </div>
                 </div>
@@ -564,7 +564,7 @@ const CreatePost = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-end gap-3">
+            <div className="border-t border-[#2A2A2A] p-4 bg-[#111111] flex items-center justify-end gap-3">
               {generatedContent ? (
                 <>
                   <button
@@ -573,14 +573,14 @@ const CreatePost = () => {
                       setAiDescription("")
                     }}
                     disabled={aiLoading}
-                    className="px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-full font-semibold transition-colors disabled:opacity-50"
+                    className="px-4 py-2 text-white hover:bg-[#1A1A1A] border border-[#2A2A2A] rounded-full font-semibold transition-colors disabled:opacity-50"
                   >
                     Regenerate
                   </button>
                   <button
                     onClick={handleUseGeneratedContent}
                     disabled={aiLoading}
-                    className="px-4 py-2 bg-purple-500 text-white hover:bg-purple-600 rounded-full font-semibold transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-[#E8450A] text-white hover:bg-[#c83c0a] rounded-full font-semibold transition-colors disabled:opacity-50"
                   >
                     Use This
                   </button>
@@ -589,7 +589,7 @@ const CreatePost = () => {
                 <button
                   onClick={generatePostContent}
                   disabled={!aiDescription.trim() || aiLoading}
-                  className="px-4 py-2 bg-purple-500 text-white hover:bg-purple-600 rounded-full font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-[#E8450A] text-white hover:bg-[#c83c0a] rounded-full font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {aiLoading ? (
                     <>

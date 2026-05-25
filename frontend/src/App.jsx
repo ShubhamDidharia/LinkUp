@@ -98,7 +98,7 @@ function App() {
 
     return (
       <>
-        <div className='w-full min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200'>
+        <div className="w-full min-h-screen bg-[#0D0D0D] transition-colors duration-200">
           <Routes>
             <Route path='/admin/*' element={<AdminLayout />} />
           </Routes>
@@ -126,7 +126,7 @@ function App() {
   // App layout with sidebar and right panel
   return (
     <>
-      <div className='flex min-w-screen max-w-6xl mx-auto bg-white dark:bg-slate-900 transition-colors duration-200'>
+      <div className="flex min-w-screen max-w-6xl mx-auto bg-[#0D0D0D] transition-colors duration-200">
        {authUser && <Sidebar/>}
         <Routes>
           <Route path='/' element={authUser ? <HomePage/> : <Navigate to='/login'/>} />

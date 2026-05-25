@@ -34,9 +34,9 @@ const AiModal = ({ violation, onClose }) => {
     const renderAnalysis = (text) => {
         return text.split("\n").map((line, i) => {
             const verdictColor =
-                line.includes("BOT") ? "text-rose-400" :
-                line.includes("SUSPICIOUS") ? "text-amber-400" :
-                line.includes("AUTHENTIC") ? "text-emerald-400" : "text-slate-300";
+                line.includes("BOT") ? "text-theme-coral" :
+                line.includes("SUSPICIOUS") ? "text-theme-yellow" :
+                line.includes("AUTHENTIC") ? "text-theme-purple" : "text-slate-300";
             return (
                 <p key={i} className={`text-sm leading-relaxed ${line.startsWith("1.") ? `font-extrabold text-base ${verdictColor}` : "text-slate-300"}`}>
                     {line || <br />}
@@ -47,11 +47,11 @@ const AiModal = ({ violation, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden">
+            <div className="bg-theme-dark/80 border border-theme-purple/20 rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-slate-800">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-violet-500/10 rounded-lg text-violet-400">
+                        <div className="p-2 bg-theme-pink/10 rounded-lg text-theme-pink">
                             <FaBrain />
                         </div>
                         <div>
@@ -87,7 +87,7 @@ const AiModal = ({ violation, onClose }) => {
 
                     {/* AI result area */}
                     {ran ? (
-                        <div className="bg-slate-950 border border-violet-800/30 rounded-xl p-4 space-y-2 max-h-60 overflow-y-auto">
+                        <div className="bg-slate-950 border border-theme-pink/30 rounded-xl p-4 space-y-2 max-h-60 overflow-y-auto">
                             {renderAnalysis(analysis)}
                         </div>
                     ) : (
@@ -108,7 +108,7 @@ const AiModal = ({ violation, onClose }) => {
                     <button
                         onClick={runAnalysis}
                         disabled={loading}
-                        className="btn bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-90 border-none text-white font-bold rounded-xl px-6 cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                        className="btn bg-gradient-to-r from-theme-purple to-theme-pink hover:opacity-90 border-none text-white font-bold rounded-xl px-6 cursor-pointer disabled:opacity-50 flex items-center gap-2"
                     >
                         {loading ? (
                             <><span className="loading loading-spinner loading-xs"></span> Analyzing…</>
@@ -125,11 +125,11 @@ const AiModal = ({ violation, onClose }) => {
 // ── Severity badge helper ──────────────────────────────────────────────────────
 const endpointSeverity = (endpoint) => {
     if (endpoint.includes("login") || endpoint.includes("signup"))
-        return { label: "Auth Attack", cls: "bg-rose-500/10 text-rose-400 border-rose-500/20" };
+        return { label: "Auth Attack", cls: "bg-theme-coral/10 text-theme-coral border-theme-coral/20" };
     if (endpoint.includes("posts"))
-        return { label: "Spam", cls: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
+        return { label: "Spam", cls: "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20" };
     if (endpoint.includes("reports"))
-        return { label: "Report Flood", cls: "bg-orange-500/10 text-orange-400 border-orange-500/20" };
+        return { label: "Report Flood", cls: "bg-theme-coral/10 text-theme-coral border-theme-coral/20" };
     return { label: "General", cls: "bg-slate-700/30 text-slate-400 border-slate-700" };
 };
 
@@ -181,7 +181,7 @@ const SecurityAlerts = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-24">
-                <span className="loading loading-spinner loading-md text-indigo-500"></span>
+                <span className="loading loading-spinner loading-md text-theme-purple"></span>
             </div>
         );
     }
@@ -191,7 +191,7 @@ const SecurityAlerts = () => {
             {/* Header */}
             <div className="flex justify-between items-center flex-wrap gap-4 border-b border-slate-900 pb-6">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-rose-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-theme-coral via-theme-pink to-theme-yellow bg-clip-text text-transparent">
                         Security Alerts
                     </h1>
                     <p className="text-slate-400 mt-1 text-sm">
@@ -199,7 +199,7 @@ const SecurityAlerts = () => {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${violations.length > 0 ? "bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${violations.length > 0 ? "bg-theme-coral/10 text-theme-coral border-theme-coral/20 animate-pulse" : "bg-theme-purple/10 text-theme-purple border-theme-purple/20"}`}>
                         {violations.length > 0 ? `${violations.length} Active Alerts` : "All Clear"}
                     </span>
                     <button
@@ -214,7 +214,7 @@ const SecurityAlerts = () => {
             {/* Empty state */}
             {violations.length === 0 && (
                 <div className="text-center py-20 text-slate-500 bg-slate-900/20 border border-slate-800/40 rounded-2xl">
-                    <FaShieldVirus className="text-4xl mx-auto mb-4 text-emerald-500/40" />
+                    <FaShieldVirus className="text-4xl mx-auto mb-4 text-theme-purple/40" />
                     <p className="font-semibold text-slate-400">No rate-limit violations detected.</p>
                     <p className="text-sm mt-1">The system is operating normally.</p>
                 </div>
@@ -226,7 +226,7 @@ const SecurityAlerts = () => {
                     const sev = endpointSeverity(v.endpoint);
                     const hasUser = !!v.user;
                     return (
-                        <div key={v._id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all duration-200">
+                        <div key={v._id} className="bg-theme-dark/80 border border-theme-purple/20 rounded-2xl p-5 hover:border-theme-purple/40 transition-all duration-200">
                             <div className="flex flex-wrap justify-between gap-4">
                                 {/* Left: incident info */}
                                 <div className="space-y-3 min-w-0">
@@ -235,10 +235,10 @@ const SecurityAlerts = () => {
                                             {sev.label}
                                         </span>
                                         <span className="text-xs text-slate-500 font-mono flex items-center gap-1">
-                                            <FaNetworkWired className="text-indigo-400/60" /> {v.ip}
+                                            <FaNetworkWired className="text-theme-purple/60" /> {v.ip}
                                         </span>
                                         {v.violationCount > 1 && (
-                                            <span className="px-2 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full text-[10px] font-bold">
+                                            <span className="px-2 py-0.5 bg-theme-coral/10 text-theme-coral border border-theme-coral/20 rounded-full text-[10px] font-bold">
                                                 ×{v.violationCount} hits
                                             </span>
                                         )}
@@ -261,7 +261,7 @@ const SecurityAlerts = () => {
                                                 alt={v.user.username}
                                             />
                                             <span className="text-xs font-bold text-slate-300">@{v.user.username}</span>
-                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${v.user.status === "suspended" ? "bg-rose-500/10 text-rose-400 border-rose-500/20" : v.user.status === "under_review" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
+                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${v.user.status === "suspended" ? "bg-theme-coral/10 text-theme-coral border-theme-coral/20" : v.user.status === "under_review" ? "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20" : "bg-theme-purple/10 text-theme-purple border-theme-purple/20"}`}>
                                                 {v.user.status}
                                             </span>
                                             <span className="text-[10px] text-slate-500">{v.user.strikes} strikes</span>
@@ -278,7 +278,7 @@ const SecurityAlerts = () => {
                                 <div className="flex flex-col gap-2 shrink-0 justify-center">
                                     <button
                                         onClick={() => openAiModal(v)}
-                                        className="btn btn-sm bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-90 border-none text-white font-bold rounded-xl px-4 cursor-pointer flex items-center gap-2"
+                                        className="btn btn-sm bg-gradient-to-r from-theme-purple to-theme-pink hover:opacity-90 border-none text-white font-bold rounded-xl px-4 cursor-pointer flex items-center gap-2"
                                     >
                                         <FaBrain className="text-xs" /> AI Analyze
                                     </button>
@@ -288,14 +288,14 @@ const SecurityAlerts = () => {
                                             <button
                                                 disabled={quickActionMutation.isPending}
                                                 onClick={() => quickActionMutation.mutate({ userId: v.user._id, action: "warn" })}
-                                                className="btn btn-sm bg-amber-600 hover:bg-amber-700 border-none text-white rounded-xl px-4 cursor-pointer flex items-center gap-2 disabled:opacity-40"
+                                                className="btn btn-sm bg-theme-yellow hover:bg-theme-yellow/80 border-none text-white rounded-xl px-4 cursor-pointer flex items-center gap-2 disabled:opacity-40"
                                             >
                                                 <FaExclamationTriangle className="text-xs" /> Warn
                                             </button>
                                             <button
                                                 disabled={quickActionMutation.isPending || v.user.status === "suspended"}
                                                 onClick={() => quickActionMutation.mutate({ userId: v.user._id, action: "suspend" })}
-                                                className="btn btn-sm bg-rose-700 hover:bg-rose-800 border-none text-white rounded-xl px-4 cursor-pointer flex items-center gap-2 disabled:opacity-40"
+                                                className="btn btn-sm bg-theme-coral hover:bg-theme-coral/80 border-none text-white rounded-xl px-4 cursor-pointer flex items-center gap-2 disabled:opacity-40"
                                             >
                                                 <FaUserTimes className="text-xs" /> Suspend
                                             </button>

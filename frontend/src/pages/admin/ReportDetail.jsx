@@ -90,14 +90,14 @@ const ReportDetail = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-full min-h-[400px]">
-                <div className="loading loading-spinner text-indigo-500 loading-lg"></div>
+                <div className="loading loading-spinner text-theme-purple loading-lg"></div>
             </div>
         );
     }
 
     if (error || !report) {
         return (
-            <div className="p-8 text-center text-red-400">
+            <div className="p-8 text-center text-theme-coral">
                 Error: {error?.message || "Report not found"}
             </div>
         );
@@ -112,7 +112,7 @@ const ReportDetail = () => {
                 <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold tracking-wider uppercase mb-1">
                     <Link to="/admin/reports" className="hover:text-white transition-colors">Reports Queue</Link>
                     <span>/</span>
-                    <span className="text-indigo-400">Details</span>
+                    <span className="text-theme-purple">Details</span>
                 </div>
                 <h1 className="text-3xl font-extrabold tracking-tight text-white">Review Flagged Activity</h1>
                 <p className="text-slate-500 mt-2">Investigate the flagged content, user status, and determine disciplinary actions.</p>
@@ -123,10 +123,10 @@ const ReportDetail = () => {
                 
                 {/* LEFT COLUMN: Reported Content details */}
                 <div className="lg:col-span-5 space-y-6">
-                    <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl overflow-hidden">
+                    <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl overflow-hidden">
                         <div className="p-6 border-b border-slate-850 bg-slate-850/30 flex justify-between items-center">
                             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                <span className="p-1.5 bg-rose-500/10 text-rose-400 rounded-lg"><FaExclamationTriangle className="text-xs" /></span>
+                                <span className="p-1.5 bg-theme-coral/10 text-theme-coral rounded-lg"><FaExclamationTriangle className="text-xs" /></span>
                                 Flagged Content
                             </h2>
                             <span className="px-2.5 py-1 bg-slate-800 text-slate-400 border border-slate-700 rounded-full text-xs font-semibold uppercase">
@@ -228,18 +228,18 @@ const ReportDetail = () => {
                 {/* RIGHT COLUMN: Reported User History */}
                 <div className="lg:col-span-7 space-y-6">
                     {/* User Overview card */}
-                    <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl overflow-hidden">
+                    <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl overflow-hidden">
                         <div className="p-6 border-b border-slate-850 bg-slate-850/30 flex items-center justify-between">
                             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                <span className="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg"><FaUser className="text-xs" /></span>
+                                <span className="p-1.5 bg-theme-purple/10 text-theme-purple rounded-lg"><FaUser className="text-xs" /></span>
                                 User History & Profile
                             </h2>
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase border ${
                                 reportedUser?.status === "suspended" 
-                                    ? "bg-rose-500/10 text-rose-400 border-rose-500/20" 
+                                    ? "bg-theme-coral/10 text-theme-coral border-theme-coral/20" 
                                     : reportedUser?.status === "under_review"
-                                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                                    : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                    ? "bg-theme-yellow/10 text-theme-yellow border-theme-yellow/20"
+                                    : "bg-theme-purple/10 text-theme-purple border-theme-purple/20"
                             }`}>
                                 {reportedUser?.status || "active"}
                             </span>
@@ -313,16 +313,16 @@ const ReportDetail = () => {
                     </div>
 
                     {/* Gemini AI Summary panel */}
-                    <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl overflow-hidden">
+                    <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl overflow-hidden">
                         <div className="p-6 border-b border-slate-850 bg-slate-850/30 flex items-center justify-between">
                             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                <span className="p-1.5 bg-violet-500/10 text-violet-400 rounded-lg"><FaBrain className="text-xs" /></span>
+                                <span className="p-1.5 bg-theme-pink/10 text-theme-pink rounded-lg"><FaBrain className="text-xs" /></span>
                                 Gemini AI History Analysis
                             </h2>
                             <button
                                 onClick={generateAISummary}
                                 disabled={generatingAI}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white rounded-lg text-xs font-bold transition-all shadow-md shadow-violet-600/10"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-theme-pink hover:bg-theme-pink/80 disabled:opacity-40 text-white rounded-lg text-xs font-bold transition-all shadow-md shadow-theme-pink/10"
                             >
                                 {generatingAI ? (
                                     <span className="loading loading-spinner loading-xs"></span>
@@ -336,8 +336,8 @@ const ReportDetail = () => {
                         </div>
                         <div className="p-6">
                             {aiSummary ? (
-                                <div className="p-4 bg-violet-500/5 border border-violet-500/10 rounded-xl space-y-2">
-                                    <h4 className="text-xs font-bold text-violet-400 uppercase tracking-widest">Gemini Summary</h4>
+                                <div className="p-4 bg-theme-pink/5 border border-theme-pink/10 rounded-xl space-y-2">
+                                    <h4 className="text-xs font-bold text-theme-pink uppercase tracking-widest">Gemini Summary</h4>
                                     <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">{aiSummary}</p>
                                 </div>
                             ) : (
@@ -349,10 +349,10 @@ const ReportDetail = () => {
             </div>
 
             {/* BOTTOM: Action Resolution panel */}
-            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl overflow-hidden">
+            <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl overflow-hidden">
                 <div className="p-6 border-b border-slate-850 bg-slate-850/30">
                     <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                        <span className="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg"><FaCheckCircle className="text-xs" /></span>
+                        <span className="p-1.5 bg-theme-yellow/10 text-theme-yellow rounded-lg"><FaCheckCircle className="text-xs" /></span>
                         Resolve Report
                     </h2>
                 </div>
@@ -363,7 +363,7 @@ const ReportDetail = () => {
                             value={adminNote}
                             onChange={(e) => setAdminNote(e.target.value)}
                             placeholder="Add reason, policy links, warnings to be issued..." 
-                            className="textarea textarea-bordered bg-slate-950 border-slate-850 w-full text-slate-300 text-sm focus:border-indigo-500 rounded-xl"
+                            className="textarea textarea-bordered bg-slate-950 border-slate-850 w-full text-slate-300 text-sm focus:border-theme-purple rounded-xl"
                             rows={3}
                         />
                     </div>
@@ -379,21 +379,21 @@ const ReportDetail = () => {
                         <button 
                             onClick={() => resolveMutation.mutate({ action: "warn", adminNote })}
                             disabled={resolveMutation.isPending}
-                            className="btn bg-amber-600 hover:bg-amber-700 text-white border-none px-6 rounded-xl font-bold flex-1"
+                            className="btn bg-theme-yellow hover:bg-theme-yellow/80 text-white border-none px-6 rounded-xl font-bold flex-1"
                         >
                             Issue Warning (+1 Strike)
                         </button>
                         <button 
                             onClick={() => resolveMutation.mutate({ action: "delete_content", adminNote })}
                             disabled={resolveMutation.isPending}
-                            className="btn bg-rose-600 hover:bg-rose-700 text-white border-none px-6 rounded-xl font-bold flex-1"
+                            className="btn bg-theme-coral hover:bg-theme-coral/80 text-white border-none px-6 rounded-xl font-bold flex-1"
                         >
                             <FaTrashAlt /> Delete Flagged Content
                         </button>
                         <button 
                             onClick={() => resolveMutation.mutate({ action: "suspend", adminNote })}
                             disabled={resolveMutation.isPending}
-                            className="btn bg-red-700 hover:bg-red-800 text-white border-none px-6 rounded-xl font-bold flex-1"
+                            className="btn bg-theme-coral hover:bg-theme-coral/80 text-white border-none px-6 rounded-xl font-bold flex-1"
                         >
                             <FaBan /> Suspend User
                         </button>

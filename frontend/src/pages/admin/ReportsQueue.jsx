@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight, FaEye, FaFlag } from "react-icons/fa";
 
 const typeBadges = {
-    post: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
-    comment: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
-    profileImage: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
-    coverImage: "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20",
-    username: "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+    post: "bg-theme-purple/10 text-theme-purple border border-theme-purple/20",
+    comment: "bg-theme-yellow/10 text-theme-yellow border border-theme-yellow/20",
+    profileImage: "bg-theme-pink/10 text-theme-pink border border-theme-pink/20",
+    coverImage: "bg-theme-coral/10 text-theme-coral border border-theme-coral/20",
+    username: "bg-theme-coral/10 text-theme-coral border border-theme-coral/20"
 };
 
 const ReportsQueue = () => {
@@ -30,14 +30,14 @@ const ReportsQueue = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-full min-h-[400px]">
-                <div className="loading loading-spinner text-indigo-500 loading-lg"></div>
+                <div className="loading loading-spinner text-theme-purple loading-lg"></div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="p-8 text-center text-red-400">
+            <div className="p-8 text-center text-theme-coral">
                 Error loading reports: {error.message}
             </div>
         );
@@ -48,7 +48,7 @@ const ReportsQueue = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-theme-purple to-theme-pink bg-clip-text text-transparent">
                         Reports Queue
                     </h1>
                     <p className="text-slate-500 mt-2">Manage and resolve user-submitted policy infraction reports.</p>
@@ -56,7 +56,7 @@ const ReportsQueue = () => {
             </div>
 
             {/* List Table Card */}
-            <div className="card bg-slate-900 border border-slate-800 shadow-xl rounded-2xl overflow-hidden">
+            <div className="card bg-theme-dark/80 border border-theme-purple/20 shadow-xl rounded-2xl overflow-hidden">
                 {reports.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-16 space-y-4">
                         <div className="p-4 bg-slate-850 rounded-full text-slate-600 border border-slate-800">
@@ -119,7 +119,7 @@ const ReportsQueue = () => {
                                             <td className="p-4 text-center">
                                                 <Link 
                                                     to={`/admin/reports/${report._id}`}
-                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-md shadow-indigo-600/10 transition-colors duration-200"
+                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-theme-purple hover:bg-theme-purple/80 text-white rounded-lg text-xs font-semibold shadow-md shadow-theme-purple/10 transition-colors duration-200"
                                                 >
                                                     <FaEye />
                                                     <span>Review</span>

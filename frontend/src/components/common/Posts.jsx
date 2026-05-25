@@ -53,7 +53,7 @@ const Posts = ({ feedType, username, userId }) => {
   }, [feedType, refetch])
 
   return (
-    <div className="bg-white dark:bg-slate-900 min-h-screen transition-colors">
+    <div className="bg-[#0D0D0D] min-h-screen transition-colors\">
       {(isLoading || isRefetching) && (
         <div className="space-y-4 p-4">
           <PostSkeleton />
@@ -64,7 +64,7 @@ const Posts = ({ feedType, username, userId }) => {
 
       {!isLoading && !isRefetching && posts?.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 px-6">
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-100 dark:from-blue-900/40 to-purple-100 dark:to-purple-900/40 rounded-full flex items-center justify-center mb-6">
+          <div className="w-24 h-24 bg-[#1A1A1A] border border-[#2A2A2A] rounded-full flex items-center justify-center mb-6\">
             <div className="text-3xl">📝</div>
           </div>
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">No posts yet</h3>
@@ -77,7 +77,7 @@ const Posts = ({ feedType, username, userId }) => {
       )}
 
       {!isLoading && !isRefetching && posts && (
-        <div className="divide-y divide-slate-100 dark:divide-slate-700">
+        <div className="divide-y divide-[#2A2A2A]\">
           {posts.map((post, index) => (
             <div
               key={post._id}

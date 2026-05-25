@@ -253,3 +253,96 @@ export const updateUserSettings = async(req,res)=>{
         res.status(500).json({error: "Internal server error"});
     }
 }
+
+// Helper function to extract public ID from Cloudinary URL
+const extractPublicId = (url) => {
+    if (!url) return null;
+    try {
+        // URL format: https://res.cloudinary.com/account/image/upload/v1234567890/publicId.ext
+        const parts = url.split('/');
+        const filename = parts[parts.length - 1];
+        return filename.split('.')[0];
+    } catch (error) {
+        console.error("Error extracting public ID:", error);
+        return null;
+    }
+};
+
+export const deleteOwnAccount = async(req,res)=>{
+    try {
+        const userId = req.user._id;
+
+        // Find the user
+        const user = await User.findById(userId);
+        if(!user) return res.status(404).json({error: "User not found"});
+
+        // Collect all image public IDs to delete from Cloudinary
+        const imagesToDelete = [];
+
+        // Get profile image public ID
+        if (user.profileImage) {
+            const profilePublicId = extractPublicId(user.profileImage);
+            if (profilePublicId) imagesToDelete.push(profilePublicId);
+        }
+
+        // Get cover image public ID
+        if (user.coverImage) {
+            const coverPublicId = extractPublicId(user.coverImage);
+            if (coverPublicId) imagesToDelete.push(coverPublicId);
+        }
+
+        // Get all post images public IDs
+        const userPosts = await Post.find({user: userId});
+        userPosts.forEach(post => {
+            if (post.img) {
+                const postPublicId = extractPublicId(post.img);
+                if (postPublicId) imagesToDelete.push(postPublicId);
+            }
+        });
+
+        // Delete all images from Cloudinary
+        for (const publicId of imagesToDelete) {
+            try {
+                await cloudinary.uploader.destroy(publicId);
+            } catch (error) {
+                console.error(`Failed to delete image ${publicId} from Cloudinary:`, error);
+                // Continue with other deletions
+            }
+        }
+
+        // Delete all posts by this user
+        await Post.deleteMany({user: userId});
+
+        // Delete all notifications where this user is sender or receiver
+        await Notification.deleteMany({
+            $or: [
+                {from: userId},
+                {to: userId}
+            ]
+        });
+
+        // Remove this user from all other users' followers/following lists
+        await User.updateMany(
+            {},
+            {
+                $pull: {
+                    followers: userId,
+                    following: userId,
+                    likedPosts: { $in: userPosts.map(p => p._id) },
+                    bookmarkedPosts: { $in: userPosts.map(p => p._id) }
+                }
+            }
+        );
+
+        // Clear the JWT cookie
+        res.clearCookie("jwt");
+
+        // Delete the user
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).json({message: "Account deleted successfully"});
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
