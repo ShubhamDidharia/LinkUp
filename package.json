@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-label": "^2.1.8",
