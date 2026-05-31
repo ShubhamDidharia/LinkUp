@@ -6,11 +6,13 @@ export const generateTokenAndSetCookie = (userId, res) => {
         expiresIn: '1d' 
     });
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie("jwt",token,{
         httpOnly:true,  // Prevents client-side JavaScript from accessing the cookie
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'strict', // Helps prevent CSRF attacks --> csrf attacks are when a malicious site tricks a user into performing actions on another site where they are authenticated 
-        secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
+        sameSite: isProduction ? 'none' : 'strict', // Allow cross-site auth between Vercel and Render in production
+        secure: isProduction // Use secure cookies in production
         }
     );
 

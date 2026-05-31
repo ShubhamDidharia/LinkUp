@@ -2,6 +2,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
@@ -35,6 +36,11 @@ const httpServer = createServer(app);
 const ORIGINS = process.env.NODE_ENV === "production"
 	? (process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [])
 	: ["http://localhost:5173", "http://localhost:3000"];
+
+app.use(cors({
+	origin: ORIGINS,
+	credentials: true,
+}));
 
 const io = new Server(httpServer, {
 	cors: {

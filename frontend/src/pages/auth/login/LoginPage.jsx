@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { MdOutlineMail } from "react-icons/md"
 import { MdPassword } from "react-icons/md"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { apiFetch } from "@/lib/api"
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const LoginPage = () => {
   } = useMutation({
     mutationFn: async ({ username, password }) => {
       try {
-        const res = await fetch("/api/auth/login", {
+        const res = await apiFetch("/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -34,7 +35,7 @@ const LoginPage = () => {
           throw new Error(data.error || "Something went wrong")
         }
       } catch (error) {
-        throw new Error(error)
+        throw new Error(error instanceof Error ? error.message : "Something went wrong")
       }
     },
     onSuccess: () => {

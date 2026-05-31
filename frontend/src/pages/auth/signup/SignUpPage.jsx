@@ -8,6 +8,7 @@ import { MdPassword } from "react-icons/md"
 import { MdDriveFileRenameOutline } from "react-icons/md"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { apiFetch } from "@/lib/api"
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const SignUpPage = () => {
   const queryClient = useQueryClient()
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: async (formData) => {
-      const res = await fetch("/api/auth/signup", {
+      const res = await apiFetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -17,6 +17,7 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 import { useThemeStore } from './stores/useThemeStore';
 import AdminLayout from './components/admin/AdminLayout';
 import { useSocket } from './hooks/useSocket';
+import { apiFetch } from '@/lib/api';
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
     queryKey : ['authUser'],
     queryFn: async()=>{
       try {
-        const res = await fetch('/api/auth/getMe');
+        const res = await apiFetch('/api/auth/getMe');
         const data  = await res.json();
         if(data.error)return null;
         if(!res.ok){
