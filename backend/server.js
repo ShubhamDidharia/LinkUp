@@ -99,17 +99,17 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Serve frontend in production
-if (process.env.NODE_ENV === "production") {
-	const staticPath = path.resolve(__dirname, "../frontend/dist");
-	app.use(express.static(staticPath));
+// if (process.env.NODE_ENV === "production") {
+// 	const staticPath = path.resolve(__dirname, "../frontend/dist");
+// 	app.use(express.static(staticPath));
 
-	// Send index.html for any non-API route (client-side routing)
-	app.get('/{*splat}', (req, res) => {
-		// If the request is for an API route, skip
-		if (req.path.startsWith("/api/")) return res.status(404).end();
-		res.sendFile(path.join(staticPath, "index.html"));
-	});
-}
+// 	// Send index.html for any non-API route (client-side routing)
+// 	app.get("/*", (req, res) => {
+// 		// If the request is for an API route, skip
+// 		if (req.path.startsWith("/api/")) return res.status(404).end();
+// 		res.sendFile(path.join(staticPath, "index.html"));
+// 	});
+// }
 
 
 httpServer.listen(PORT, () => {
