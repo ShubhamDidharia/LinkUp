@@ -32,9 +32,13 @@ cloudinary.config({
 
 const app = express();
 const httpServer = createServer(app);
+const ORIGINS = process.env.NODE_ENV === "production"
+	? (process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [])
+	: ["http://localhost:5173", "http://localhost:3000"];
+
 const io = new Server(httpServer, {
 	cors: {
-		origin: process.env.NODE_ENV === "production" ? "" : ["http://localhost:5173", "http://localhost:3000"],
+		origin: ORIGINS,
 		methods: ["GET", "POST"],
 		credentials: true
 	}
@@ -93,6 +97,19 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
+
+// Serve frontend in production
+if (process.env.NODE_ENV === "production") {
+	const staticPath = path.resolve(__dirname, "../frontend/dist");
+	app.use(express.static(staticPath));
+
+	// Send index.html for any non-API route (client-side routing)
+	app.get("/*", (req, res) => {
+		// If the request is for an API route, skip
+		if (req.path.startsWith("/api/")) return res.status(404).end();
+		res.sendFile(path.join(staticPath, "index.html"));
+	});
+}
 
 
 httpServer.listen(PORT, () => {
