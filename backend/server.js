@@ -104,7 +104,7 @@ if (process.env.NODE_ENV === "production") {
 	app.use(express.static(staticPath));
 
 	// Send index.html for any non-API route (client-side routing)
-	app.get("/*", (req, res) => {
+	app.get('/{*splat}', (req, res) => {
 		// If the request is for an API route, skip
 		if (req.path.startsWith("/api/")) return res.status(404).end();
 		res.sendFile(path.join(staticPath, "index.html"));
